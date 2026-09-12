@@ -15,6 +15,11 @@ const SITE_NAME = "Oposiciones BOE Hoy";
 const SITE_DESC = "Convocatorias de oposiciones y empleo público publicadas en el BOE, actualizadas automáticamente cada día a partir de la fuente oficial.";
 const SITE_URL = "https://boeoposiciones.es"; // dominio propio
 
+// Script de verificación / Auto ads de Google AdSense.
+// Se inserta en el <head> de TODAS las páginas (lo exige Google para verificar el sitio).
+// Cuando cambies de cuenta o Google te dé un snippet distinto, solo hay que tocar esta línea.
+const ADSENSE_SNIPPET = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2534713372103040" crossorigin="anonymous"></script>`;
+
 const CATEGORIA_LABELS = {
   "policia-guardia-civil": "Policía y Guardia Civil",
   "bomberos": "Bomberos",
@@ -69,6 +74,7 @@ function layout({ title, description, canonical, activeNav, bodyHtml, base = "",
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
 <meta name="twitter:image" content="${SITE_URL}/og-image.png">
+${ADSENSE_SNIPPET}
 ${ldScripts}
 </head>
 <body>
