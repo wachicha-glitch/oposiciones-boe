@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://wachicha-glitch.github.io/oposiciones-boe/sitemap.xml
+Sitemap: https://boeoposiciones.es/sitemap.xml

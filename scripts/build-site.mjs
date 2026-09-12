@@ -13,7 +13,7 @@ const DOCS_DIR = path.join(ROOT, "docs");
 
 const SITE_NAME = "Oposiciones BOE Hoy";
 const SITE_DESC = "Convocatorias de oposiciones y empleo público publicadas en el BOE, actualizadas automáticamente cada día a partir de la fuente oficial.";
-const SITE_URL = "https://wachicha-glitch.github.io/oposiciones-boe"; // <-- cámbialo si compras un dominio propio
+const SITE_URL = "https://boeoposiciones.es"; // dominio propio
 
 const CATEGORIA_LABELS = {
   "policia-guardia-civil": "Policía y Guardia Civil",
