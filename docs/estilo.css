@@ -1,0 +1,246 @@
+/* ============================================================
+   Oposiciones BOE Hoy — sistema visual
+   Inspirado en el propio objeto del sitio: un boletín oficial.
+   Tipografía IBM Plex (Serif/Sans/Mono) — familia diseñada para
+   documentación técnica e institucional, coherente entre sí.
+   ============================================================ */
+
+:root {
+  --tinta: #1B2440;        /* texto principal, casi tinta de imprenta */
+  --tinta-suave: #4E5975;  /* texto secundario */
+  --papel: #F3F3EF;        /* fondo, papel frío, no crema cálido */
+  --papel-alt: #EAEAE3;
+  --linea: #D8D8CE;
+  --oro: #97672B;          /* acento — bronce de sello oficial */
+  --oro-suave: #F1E6D3;
+  --rojo: #8C3A2B;         /* solo para urgencia/plazo, uso puntual */
+  --blanco: #FFFFFF;
+  --radio: 3px;
+  --serif: "IBM Plex Serif", Georgia, serif;
+  --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: var(--papel);
+  color: var(--tinta);
+  line-height: 1.55;
+  font-size: 16px;
+}
+.contenedor { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+a { color: var(--oro); }
+:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- cabecera ---------- */
+.cabecera {
+  background: var(--tinta);
+  border-bottom: 3px solid var(--oro);
+}
+.cabecera-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; position: relative;
+}
+.logo {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--blanco);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+.logo::before {
+  content: "§";
+  color: var(--oro);
+  margin-right: 6px;
+}
+
+.menu-toggle {
+  display: none;
+  background: none; border: 1px solid rgba(255,255,255,0.35); border-radius: var(--radio);
+  color: var(--blanco); font-size: 1rem; padding: 7px 12px; cursor: pointer;
+}
+
+.nav { display: flex; gap: 4px; }
+.nav a {
+  color: rgba(255,255,255,0.78);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: var(--radio);
+}
+.nav a.activo { color: var(--blanco); background: rgba(255,255,255,0.1); }
+.nav a:hover { color: var(--blanco); }
+
+@media (max-width: 720px) {
+  .menu-toggle { display: inline-flex; align-items: center; gap: 6px; }
+  .nav {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--tinta);
+    flex-direction: column;
+    padding: 6px 14px 14px;
+    border-bottom: 3px solid var(--oro);
+    gap: 2px;
+  }
+  .nav.abierto { display: flex; }
+  .nav a { padding: 12px 8px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 0; }
+}
+
+/* ---------- hero / portada ---------- */
+.hero {
+  padding: 44px 0 28px;
+  display: flex; align-items: center; gap: 32px; flex-wrap: wrap;
+}
+.hero-texto { flex: 1; min-width: 260px; }
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 4vw, 2.35rem);
+  line-height: 1.2;
+  margin: 0 0 12px;
+  max-width: 20ch;
+}
+.hero p { color: var(--tinta-suave); max-width: 56ch; margin: 0 0 6px; }
+.hero-nota { font-family: var(--mono); font-size: 0.82rem; color: var(--tinta-suave); }
+.hero-compacta { padding-bottom: 10px; }
+.hero-compacta h1 { max-width: none; }
+
+/* Sello circular — el único elemento "vistoso" del diseño */
+.sello {
+  flex-shrink: 0;
+  width: 128px; height: 128px;
+  border-radius: 50%;
+  border: 2px solid var(--oro);
+  outline: 1px dashed var(--oro);
+  outline-offset: -8px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transform: rotate(-6deg);
+  color: var(--oro);
+  font-family: var(--serif);
+  background: var(--oro-suave);
+}
+.sello strong { font-size: 2rem; line-height: 1; }
+.sello span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  max-width: 84px;
+  margin-top: 4px;
+}
+@media (max-width: 560px) {
+  .hero { flex-direction: column-reverse; align-items: flex-start; gap: 16px; }
+  .sello { align-self: center; }
+}
+
+/* ---------- filtros ---------- */
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 6px; }
+.filtros input, .filtros select {
+  padding: 11px 14px; border: 1px solid var(--linea); border-radius: var(--radio);
+  font-size: 0.95rem; background: var(--blanco); font-family: var(--sans); color: var(--tinta);
+}
+.filtros input { flex: 1; min-width: 220px; }
+.filtros input:focus, .filtros select:focus { border-color: var(--oro); }
+
+/* ---------- listado (estilo "asiento de registro") ---------- */
+.lista { padding: 22px 0 40px; }
+.tarjeta {
+  border-top: 1px solid var(--linea);
+  padding: 18px 4px;
+  display: grid;
+  gap: 4px;
+}
+.lista .tarjeta:last-child { border-bottom: 1px solid var(--linea); }
+
+.tarjeta-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.etiqueta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--oro);
+  background: var(--oro-suave);
+  padding: 3px 8px;
+  border-radius: var(--radio);
+}
+.fecha { font-family: var(--mono); color: var(--tinta-suave); font-size: 0.8rem; }
+.tarjeta-titulo {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.08rem;
+  margin: 2px 0 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tarjeta-organismo { color: var(--tinta-suave); font-size: 0.88rem; margin: 0; }
+.tarjeta-acciones { margin-top: 6px; }
+.tarjeta-acciones a {
+  color: var(--tinta); text-decoration: none; font-weight: 600; font-size: 0.85rem; margin-right: 20px;
+  border-bottom: 1px solid var(--oro);
+}
+.tarjeta-acciones a:hover { color: var(--oro); }
+
+.ver-todas { padding-bottom: 44px; }
+.ver-todas a { color: var(--tinta); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--oro); padding-bottom: 2px; }
+
+/* ---------- categorías ---------- */
+.lista-categorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; padding: 20px 0 44px; }
+.categoria-card {
+  background: var(--blanco); border: 1px solid var(--linea); border-radius: var(--radio); padding: 16px;
+  display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: var(--tinta); font-weight: 600;
+  font-size: 0.95rem;
+}
+.categoria-card:hover { border-color: var(--oro); }
+.categoria-count { font-family: var(--mono); background: var(--papel-alt); border-radius: var(--radio); padding: 2px 9px; font-size: 0.82rem; color: var(--tinta-suave); }
+
+/* ---------- contenido (guía / legal) ---------- */
+.contenido { padding-bottom: 44px; max-width: 680px; }
+.contenido h2 { font-family: var(--serif); color: var(--tinta); margin-top: 30px; font-size: 1.25rem; }
+.contenido ul, .contenido ol { padding-left: 22px; }
+.contenido li { margin-bottom: 7px; }
+.aviso-contenido {
+  background: var(--oro-suave); border-left: 3px solid var(--oro); padding: 12px 16px;
+  border-radius: var(--radio); color: var(--tinta); font-size: 0.92rem; margin-top: 24px;
+}
+
+/* ---------- FAQ ---------- */
+.faq-lista { padding-bottom: 44px; max-width: 680px; }
+.faq-item { border-top: 1px solid var(--linea); padding: 14px 2px; }
+.faq-lista .faq-item:last-child { border-bottom: 1px solid var(--linea); }
+.faq-item summary { font-weight: 600; cursor: pointer; font-family: var(--serif); font-size: 1.02rem; }
+.faq-item summary::marker { color: var(--oro); }
+.faq-item p { margin: 10px 0 2px; color: var(--tinta-suave); }
+
+/* ---------- glosario ---------- */
+.glosario { padding-bottom: 44px; max-width: 720px; margin: 0; }
+.glosario-item { border-top: 1px solid var(--linea); padding: 14px 2px; margin: 0; }
+.glosario dt {
+  font-family: var(--serif); font-weight: 600; color: var(--tinta); margin: 0 0 4px;
+}
+.glosario dd { margin: 0; color: var(--tinta-suave); font-size: 0.94rem; }
+
+/* ---------- boletines autonómicos ---------- */
+.boletines-lista { padding-bottom: 12px; max-width: 720px; }
+.boletin-item {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  border-top: 1px solid var(--linea); padding: 12px 2px;
+}
+.boletines-lista .boletin-item:last-child { border-bottom: 1px solid var(--linea); }
+.boletin-nombre { font-weight: 600; min-width: 170px; }
+.boletin-sigla { font-family: var(--mono); font-size: 0.78rem; color: var(--oro); background: var(--oro-suave); padding: 2px 8px; border-radius: var(--radio); }
+.boletin-item a { margin-left: auto; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--oro); }
+.boletin-sin-enlace { margin-left: auto; color: var(--tinta-suave); font-size: 0.85rem; font-style: italic; }
+
+/* ---------- pie ---------- */
+.pie { border-top: 3px solid var(--oro); margin-top: 20px; padding: 22px 0 48px; color: var(--tinta-suave); font-size: 0.82rem; background: var(--tinta); }
+.pie .contenedor { color: rgba(255,255,255,0.65); }
+.pie a { color: rgba(255,255,255,0.85); }
+.pie-links { margin-top: 10px; }
