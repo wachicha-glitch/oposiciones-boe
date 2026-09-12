@@ -888,6 +888,12 @@ async function main() {
     `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`
   );
 
+  // ---------- ads.txt: obligatorio para que AdSense active la monetización ----------
+  await writeFile(
+    path.join(DOCS_DIR, "ads.txt"),
+    `google.com, pub-2534713372103040, DIRECT, f08c47fec0942fa0\n`
+  );
+
   console.log(`Sitio generado en ${DOCS_DIR} con ${registros.length} convocatorias, ${sitemapUrls.length} URLs en el sitemap.`);
 }
 
