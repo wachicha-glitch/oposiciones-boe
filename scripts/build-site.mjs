@@ -503,7 +503,7 @@ function paginaAvisoLegal() {
 <section class="hero"><h1>Aviso legal</h1></section>
 <article class="contenido">
   <h2>Titularidad del sitio</h2>
-  <p>[Sustituye este bloque por tu nombre o razón social, NIF/CIF, domicilio y correo de contacto, tal y como exige la Ley de Servicios de la Sociedad de la Información (LSSI) para cualquier sitio web con actividad económica en España.]</p>
+  <p>Titular del sitio: Fernando Torre-Enciso Pérez, NIF 55399935L. Correo de contacto: fertorreenciso@gmail.com.</p>
 
   <h2>Naturaleza del sitio</h2>
   <p>Este sitio web no es un canal oficial de la Agencia Estatal Boletín Oficial del Estado ni de ninguna otra administración pública. Su único objetivo es facilitar la consulta de convocatorias de empleo público que ya son de acceso libre y gratuito en el BOE, organizándolas y clasificándolas para mayor comodidad del usuario.</p>
@@ -531,10 +531,10 @@ function paginaPrivacidad() {
   <p>[Si activas anuncios o analítica, añade aquí un banner de consentimiento de cookies conforme al RGPD/LSSI-CE antes de cargar esos scripts, especialmente si tienes visitas desde la Unión Europea. Existen soluciones gratuitas de "Consent Management Platform" (CMP) certificadas por Google que puedes integrar fácilmente.]</p>
 
   <h2>Tus derechos</h2>
-  <p>Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición escribiendo a [tu correo de contacto].</p>
+  <p>Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición escribiendo a fertorreenciso@gmail.com.</p>
 
   <h2>Contacto</h2>
-  <p>[Añade aquí tu correo o formulario de contacto.]</p>
+  <p>Correo de contacto: fertorreenciso@gmail.com.</p>
 </article>`;
 }
 
