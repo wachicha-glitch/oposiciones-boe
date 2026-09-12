@@ -271,6 +271,30 @@ a { color: var(--oro); }
 .ficha-acciones a:hover { background: var(--oro); }
 .ficha-acciones a.secundario:hover { border-color: var(--oro); color: var(--oro); background: transparent; }
 
+/* ---------- banner de cookies ---------- */
+.cookie-banner {
+  position: fixed; left: 0; right: 0; bottom: -100%;
+  background: var(--tinta); color: rgba(255,255,255,0.9);
+  padding: 16px 20px; z-index: 999;
+  display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  border-top: 3px solid var(--oro);
+  transition: bottom 0.25s ease;
+}
+.cookie-banner.visible { bottom: 0; }
+.cookie-banner p { margin: 0; flex: 1; min-width: 220px; font-size: 0.86rem; line-height: 1.5; }
+.cookie-banner a { color: var(--oro); }
+.cookie-banner-botones { display: flex; gap: 10px; flex-shrink: 0; }
+.cookie-banner-botones button {
+  padding: 9px 18px; border-radius: var(--radio); font-weight: 600; font-size: 0.85rem;
+  cursor: pointer; font-family: var(--sans);
+}
+#cookie-aceptar { background: var(--oro); color: var(--tinta); border: 1px solid var(--oro); }
+#cookie-aceptar:hover { opacity: 0.9; }
+#cookie-rechazar { background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.4); }
+#cookie-rechazar:hover { border-color: var(--oro); color: var(--oro); }
+
+.enlace-cookies { background: none; border: none; padding: 0; font: inherit; color: rgba(255,255,255,0.85); text-decoration: underline; cursor: pointer; }
+
 /* ---------- pie ---------- */
 .pie { border-top: 3px solid var(--oro); margin-top: 20px; padding: 22px 0 48px; color: var(--tinta-suave); font-size: 0.82rem; background: var(--tinta); }
 .pie .contenedor { color: rgba(255,255,255,0.65); }
