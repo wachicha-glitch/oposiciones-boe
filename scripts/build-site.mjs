@@ -4,7 +4,7 @@
 // No usa frameworks: HTML plano + un poco de CSS/JS, para que cargue rápido
 // (bueno para SEO y para Core Web Vitals).
 
-import { readFile, writeFile, mkdir, cp } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = process.cwd();
@@ -13,7 +13,7 @@ const DOCS_DIR = path.join(ROOT, "docs");
 
 const SITE_NAME = "Oposiciones BOE Hoy";
 const SITE_DESC = "Convocatorias de oposiciones y empleo público publicadas en el BOE, actualizadas automáticamente cada día a partir de la fuente oficial.";
-const SITE_URL = "https://TU-DOMINIO-AQUI.example"; // <-- cámbialo cuando tengas dominio
+const SITE_URL = "https://wachicha-glitch.github.io/oposiciones-boe"; // <-- cámbialo si compras un dominio propio
 
 const CATEGORIA_LABELS = {
   "policia-guardia-civil": "Policía y Guardia Civil",
@@ -43,7 +43,10 @@ function formatearFecha(iso) {
   return `${parseInt(d, 10)} de ${meses[parseInt(m, 10) - 1]} de ${y}`;
 }
 
-function layout({ title, description, canonical, activeNav, bodyHtml }) {
+function layout({ title, description, canonical, activeNav, bodyHtml, base = "", jsonLd = [] }) {
+  const ldScripts = jsonLd
+    .map((obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/<\//g, "<\\/")}</script>`)
+    .join("\n");
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -55,21 +58,29 @@ function layout({ title, description, canonical, activeNav, bodyHtml }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="${base}estilo.css">
 <meta property="og:title" content="${escapeHtml(title)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:url" content="${canonical}">
+<meta property="og:image" content="${SITE_URL}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(title)}">
+<meta name="twitter:description" content="${escapeHtml(description)}">
+<meta name="twitter:image" content="${SITE_URL}/og-image.png">
+${ldScripts}
 </head>
 <body>
 <header class="cabecera">
   <div class="contenedor cabecera-inner">
-    <a href="index.html" class="logo">${SITE_NAME}</a>
+    <a href="${base}index.html" class="logo">${SITE_NAME}</a>
     <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-principal">☰ Menú</button>
     <nav class="nav" id="nav-principal">
-      <a href="index.html" class="${activeNav === "inicio" ? "activo" : ""}">Inicio</a>
-      <a href="todas.html" class="${activeNav === "todas" ? "activo" : ""}">Todas las convocatorias</a>
-      <a href="categorias.html" class="${activeNav === "categorias" ? "activo" : ""}">Categorías</a>
-      <a href="recursos.html" class="${activeNav === "recursos" ? "activo" : ""}">Recursos</a>
+      <a href="${base}index.html" class="${activeNav === "inicio" ? "activo" : ""}">Inicio</a>
+      <a href="${base}todas.html" class="${activeNav === "todas" ? "activo" : ""}">Todas las convocatorias</a>
+      <a href="${base}categorias.html" class="${activeNav === "categorias" ? "activo" : ""}">Categorías</a>
+      <a href="${base}recursos.html" class="${activeNav === "recursos" ? "activo" : ""}">Recursos</a>
     </nav>
   </div>
 </header>
@@ -79,26 +90,27 @@ ${bodyHtml}
 <footer class="pie">
   <div class="contenedor">
     <p>Datos obtenidos automáticamente del <a href="https://www.boe.es/datosabiertos/api/api.php" target="_blank" rel="noopener">API de datos abiertos del BOE</a> (Agencia Estatal Boletín Oficial del Estado). Este sitio no es un canal oficial; consulta siempre el <a href="https://www.boe.es" target="_blank" rel="noopener">BOE</a> para el texto legal completo antes de tomar decisiones.</p>
-    <p class="pie-links"><a href="aviso-legal.html">Aviso legal</a> · <a href="privacidad.html">Política de privacidad</a> · <a href="recursos.html">Recursos</a> · <a href="guia.html">Guía</a> · <a href="faq.html">FAQ</a> · <a href="glosario.html">Glosario</a> · <a href="boletines.html">Boletines autonómicos</a></p>
+    <p class="pie-links"><a href="${base}aviso-legal.html">Aviso legal</a> · <a href="${base}privacidad.html">Política de privacidad</a> · <a href="${base}recursos.html">Recursos</a> · <a href="${base}guia.html">Guía</a> · <a href="${base}faq.html">FAQ</a> · <a href="${base}glosario.html">Glosario</a> · <a href="${base}boletines.html">Boletines autonómicos</a></p>
   </div>
 </footer>
-<script src="menu.js"></script>
+<script src="${base}menu.js"></script>
 </body>
 </html>`;
 }
 
-function tarjeta(item) {
+function tarjeta(item, base = "") {
   const cat = CATEGORIA_LABELS[item.categoria] ?? "Otras convocatorias";
   return `<article class="tarjeta" data-categoria="${item.categoria}" data-ambito="${escapeHtml(item.ambito)}">
   <div class="tarjeta-meta">
     <span class="etiqueta">${escapeHtml(cat)}</span>
     <span class="fecha">${item.id} · ${formatearFecha(item.fecha_publicacion)}</span>
   </div>
-  <h3 class="tarjeta-titulo" title="${escapeHtml(item.titulo)}">${escapeHtml(item.titulo)}</h3>
+  <h3 class="tarjeta-titulo" title="${escapeHtml(item.titulo)}"><a href="${base}oposicion/${item.id}.html">${escapeHtml(item.titulo)}</a></h3>
   <p class="tarjeta-organismo">${escapeHtml(item.departamento)}${item.ambito ? " · " + escapeHtml(item.ambito) : ""}</p>
   <div class="tarjeta-acciones">
-    <a href="${item.url_html}" target="_blank" rel="noopener">Ver texto completo</a>
-    <a href="${item.url_pdf}" target="_blank" rel="noopener">Ver PDF oficial</a>
+    <a href="${base}oposicion/${item.id}.html">Ver ficha</a>
+    <a href="${item.url_html}" target="_blank" rel="noopener">Texto oficial</a>
+    <a href="${item.url_pdf}" target="_blank" rel="noopener">PDF oficial</a>
   </div>
 </article>`;
 }
@@ -373,6 +385,119 @@ function paginaRecursos() {
 </div>`;
 }
 
+// ---------- helpers de SEO estructural ----------
+
+function paginar(array, tam) {
+  const paginas = [];
+  for (let i = 0; i < array.length; i += tam) paginas.push(array.slice(i, i + tam));
+  return paginas.length ? paginas : [[]];
+}
+
+function nombreArchivo(base, indice) {
+  return indice === 0 ? `${base}.html` : `${base}-${indice + 1}.html`;
+}
+
+function migas(items, base) {
+  // items: [{ nombre, href }]; el último no lleva enlace (página actual)
+  const partes = items.map((it, i) => {
+    if (i === items.length - 1) return `<span aria-current="page">${escapeHtml(it.nombre)}</span>`;
+    return `<a href="${it.href}">${escapeHtml(it.nombre)}</a><span aria-hidden="true">›</span>`;
+  });
+  return `<nav class="migas" aria-label="Migas de pan">${partes.join("")}</nav>`;
+}
+
+function migasJsonLd(items, base) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.nombre,
+      item: it.hrefAbs,
+    })),
+  };
+}
+
+function tituloCorto(item) {
+  const cat = CATEGORIA_LABELS[item.categoria] ?? "Empleo público";
+  return `${cat} — ${item.departamento}`;
+}
+
+function jobPostingJsonLd(item, urlAbs) {
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: tituloCorto(item),
+    description: item.titulo + ` Convocatoria publicada por ${item.departamento}. Consulta el texto oficial completo en el enlace del BOE incluido en esta página.`,
+    datePosted: item.fecha_publicacion,
+    hiringOrganization: {
+      "@type": "Organization",
+      name: item.departamento,
+    },
+    employmentType: "OTHER",
+    identifier: {
+      "@type": "PropertyValue",
+      name: "BOE",
+      value: item.id,
+    },
+    url: urlAbs,
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "ES",
+        ...(item.ambito && !["Estado", "Ámbito local", "Universidades"].includes(item.ambito)
+          ? { addressRegion: item.ambito }
+          : {}),
+      },
+    },
+  };
+  // No incluimos validThrough: no conocemos con certeza la fecha límite real de cada
+  // convocatoria (varía por bases), y es preferible omitir un dato estructurado a
+  // inventar una fecha aproximada que Google podría considerar inexacta.
+  return ld;
+}
+
+function itemListJsonLd(items, urlBase) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${urlBase}/oposicion/${item.id}.html`,
+    })),
+  };
+}
+
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+function claveMes(fechaIso) {
+  return fechaIso.slice(0, 7); // "YYYY-MM"
+}
+
+function nombreMes(clave) {
+  const [y, m] = clave.split("-");
+  return `${MESES[parseInt(m, 10) - 1]} de ${y}`;
+}
+
+// Un par de frases propias por categoría, para que cada página de categoría
+// tenga contenido único (no solo un listado) y no lea como "thin content".
+const CATEGORIA_INTRO = {
+  "policia-guardia-civil": "Convocatorias de acceso a la Policía Nacional, Policía Local y Guardia Civil publicadas en el BOE. La mayoría de estos procesos incluyen pruebas físicas y psicotécnicas además del examen de temario, y algunos exigen la nacionalidad española.",
+  "bomberos": "Convocatorias de bombero y bombero-conductor de ayuntamientos, diputaciones y consorcios de extinción de incendios. Suelen combinar pruebas físicas específicas con un examen de conocimientos técnicos.",
+  "sanidad": "Convocatorias de personal sanitario: enfermería, medicina y técnicos de cuidados auxiliares en servicios de salud autonómicos y hospitales públicos. Muchas generan bolsa de trabajo además de plazas fijas.",
+  "docencia": "Convocatorias de cuerpos docentes y de universidades públicas: profesorado, catedráticos y personal docente e investigador.",
+  "justicia": "Convocatorias de la Administración de Justicia: tramitación procesal, auxilio judicial, letrados de la Administración de Justicia e instituciones penitenciarias.",
+  "administracion-general": "Convocatorias de cuerpos generales de la Administración del Estado: auxiliar administrativo, administrativo, gestión y cuerpos superiores, incluida la Agencia Tributaria y la Seguridad Social.",
+  "ayuntamientos": "Convocatorias de ayuntamientos, diputaciones provinciales, cabildos y consejos insulares. La mayoría de administraciones locales publican en el BOE aunque el proceso lo gestionen ellas directamente; el tipo exacto de plaza (administrativo, operario, técnico...) figura en el texto completo de cada convocatoria.",
+  "correos-empresas-publicas": "Convocatorias de Correos y Telégrafos y otras empresas públicas estatales.",
+  "fuerzas-armadas": "Convocatorias de acceso a las Fuerzas Armadas: Ejército de Tierra, Armada y Ejército del Aire.",
+  "tecnico-ingenieria": "Convocatorias de cuerpos técnicos y de ingeniería de las distintas administraciones públicas.",
+  "otros": "Convocatorias de empleo público que no encajan claramente en el resto de categorías, según el título publicado en el BOE.",
+};
+
 function paginaAvisoLegal() {
   return `
 <section class="hero"><h1>Aviso legal</h1></section>
@@ -413,6 +538,142 @@ function paginaPrivacidad() {
 </article>`;
 }
 
+// ---------- ficha individual de cada convocatoria ----------
+function paginaOposicion(item, base) {
+  const catLabel = CATEGORIA_LABELS[item.categoria] ?? "Otras convocatorias";
+  const urlAbs = `${SITE_URL}/oposicion/${item.id}.html`;
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: catLabel, href: `${base}categoria/${item.categoria}.html`, hrefAbs: `${SITE_URL}/categoria/${item.categoria}.html` },
+    { nombre: item.id, href: "", hrefAbs: urlAbs },
+  ];
+
+  const body = `
+${migas(rutaMigas, base)}
+<article class="ficha">
+  <p class="etiqueta">${escapeHtml(catLabel)}</p>
+  <h1>${escapeHtml(item.titulo)}</h1>
+  <div class="ficha-meta">
+    <span>${item.id}</span>
+    <span>Publicado el ${formatearFecha(item.fecha_publicacion)}</span>
+    <span>${escapeHtml(item.departamento)}</span>
+    ${item.ambito ? `<span>${escapeHtml(item.ambito)}</span>` : ""}
+  </div>
+  <p>Esta convocatoria fue publicada en el Boletín Oficial del Estado el ${formatearFecha(item.fecha_publicacion)}, por ${escapeHtml(item.departamento)}. Para conocer los requisitos, el plazo de solicitud, el temario y el resto de condiciones, consulta siempre el texto oficial completo:</p>
+  <div class="ficha-acciones">
+    <a href="${item.url_html}" target="_blank" rel="noopener">Ver texto completo en el BOE</a>
+    <a href="${item.url_pdf}" class="secundario" target="_blank" rel="noopener">Descargar PDF oficial</a>
+  </div>
+  <p class="aviso-contenido">Esta ficha se genera automáticamente a partir de la API oficial del BOE y no sustituye al texto legal. La categoría "${escapeHtml(catLabel)}" es una clasificación orientativa nuestra basada en el título; en convocatorias locales, el tipo exacto de plaza suele detallarse solo dentro del PDF oficial.</p>
+</article>`;
+
+  return layout({
+    title: `${item.titulo.slice(0, 65)}${item.titulo.length > 65 ? "…" : ""} — ${SITE_NAME}`,
+    description: item.titulo.slice(0, 155),
+    canonical: urlAbs,
+    activeNav: "",
+    base,
+    bodyHtml: body,
+    jsonLd: [jobPostingJsonLd(item, urlAbs), migasJsonLd(rutaMigas, base)],
+  });
+}
+
+// ---------- listado paginado por categoría ----------
+function paginaCategoriaListado(catId, label, itemsCategoria, pagina, totalPaginas, base) {
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Categorías", href: `${base}categorias.html`, hrefAbs: `${SITE_URL}/categorias.html` },
+    { nombre: label, href: "", hrefAbs: `${SITE_URL}/categoria/${catId}.html` },
+  ];
+
+  const prev = pagina > 0 ? `<a href="${nombreArchivo(`${base}categoria/${catId}`, pagina - 1)}">← Página anterior</a>` : `<span class="deshabilitado">← Página anterior</span>`;
+  const next = pagina < totalPaginas - 1 ? `<a href="${nombreArchivo(`${base}categoria/${catId}`, pagina + 1)}">Página siguiente →</a>` : `<span class="deshabilitado">Página siguiente →</span>`;
+
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero hero-compacta">
+  <div class="hero-texto">
+    <h1>${escapeHtml(label)}</h1>
+    <p>${escapeHtml(CATEGORIA_INTRO[catId] ?? "")}</p>
+  </div>
+</section>
+<section class="lista">
+  ${itemsCategoria.map((it) => tarjeta(it, base)).join("\n") || "<p>Todavía no hay convocatorias registradas en esta categoría.</p>"}
+</section>
+<nav class="paginacion" aria-label="Paginación">${prev}<span class="pagina-actual">Página ${pagina + 1} de ${totalPaginas}</span>${next}</nav>`;
+
+  return layout({
+    title: `${label} — convocatorias del BOE — ${SITE_NAME}${pagina > 0 ? ` (página ${pagina + 1})` : ""}`,
+    description: (CATEGORIA_INTRO[catId] ?? `Convocatorias de ${label} publicadas en el BOE.`).slice(0, 155),
+    canonical: `${SITE_URL}/categoria/${nombreArchivo(catId, pagina)}`,
+    activeNav: "categorias",
+    base,
+    bodyHtml: body,
+    jsonLd: [migasJsonLd(rutaMigas, base), itemListJsonLd(itemsCategoria, SITE_URL)],
+  });
+}
+
+// ---------- archivo mensual paginado ----------
+function paginaArchivoMes(clave, itemsMes, pagina, totalPaginas, base) {
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Archivo", href: `${base}archivo/index.html`, hrefAbs: `${SITE_URL}/archivo/index.html` },
+    { nombre: nombreMes(clave), href: "", hrefAbs: `${SITE_URL}/archivo/${clave}.html` },
+  ];
+
+  const prev = pagina > 0 ? `<a href="${nombreArchivo(`${base}archivo/${clave}`, pagina - 1)}">← Página anterior</a>` : `<span class="deshabilitado">← Página anterior</span>`;
+  const next = pagina < totalPaginas - 1 ? `<a href="${nombreArchivo(`${base}archivo/${clave}`, pagina + 1)}">Página siguiente →</a>` : `<span class="deshabilitado">Página siguiente →</span>`;
+
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero hero-compacta">
+  <div class="hero-texto">
+    <h1>Convocatorias de ${nombreMes(clave)}</h1>
+    <p>Todas las convocatorias de oposiciones y concursos publicadas en el BOE durante ${nombreMes(clave)}.</p>
+  </div>
+</section>
+<section class="lista">
+  ${itemsMes.map((it) => tarjeta(it, base)).join("\n")}
+</section>
+<nav class="paginacion" aria-label="Paginación">${prev}<span class="pagina-actual">Página ${pagina + 1} de ${totalPaginas}</span>${next}</nav>`;
+
+  return layout({
+    title: `Convocatorias de ${nombreMes(clave)} — ${SITE_NAME}${pagina > 0 ? ` (página ${pagina + 1})` : ""}`,
+    description: `Archivo completo de convocatorias de oposiciones publicadas en el BOE durante ${nombreMes(clave)}.`,
+    canonical: `${SITE_URL}/archivo/${nombreArchivo(clave, pagina)}`,
+    activeNav: "todas",
+    base,
+    bodyHtml: body,
+    jsonLd: [migasJsonLd(rutaMigas, base), itemListJsonLd(itemsMes, SITE_URL)],
+  });
+}
+
+function paginaArchivoIndex(mesesInfo, base) {
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Archivo", href: "", hrefAbs: `${SITE_URL}/archivo/index.html` },
+  ];
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero hero-compacta"><div class="hero-texto"><h1>Archivo completo por meses</h1><p>Histórico de todas las convocatorias publicadas, organizado por mes de publicación.</p></div></section>
+<div class="lista-categorias">
+  ${mesesInfo
+    .map(
+      (m) => `<a class="categoria-card" href="${base}archivo/${m.clave}.html"><span class="categoria-nombre">${escapeHtml(nombreMes(m.clave))}</span><span class="categoria-count">${m.total}</span></a>`
+    )
+    .join("\n")}
+</div>`;
+  return layout({
+    title: `Archivo por meses — ${SITE_NAME}`,
+    description: "Histórico completo de convocatorias de oposiciones del BOE, organizado por mes de publicación.",
+    canonical: `${SITE_URL}/archivo/index.html`,
+    activeNav: "todas",
+    base,
+    bodyHtml: body,
+    jsonLd: [migasJsonLd(rutaMigas, base)],
+  });
+}
+
 async function main() {
   let registros = [];
   try {
@@ -422,9 +683,28 @@ async function main() {
   }
 
   await mkdir(DOCS_DIR, { recursive: true });
+  for (const carpeta of ["oposicion", "categoria", "archivo"]) {
+    await rm(path.join(DOCS_DIR, carpeta), { recursive: true, force: true });
+    await mkdir(path.join(DOCS_DIR, carpeta), { recursive: true });
+  }
 
-  // ---------- página de inicio: últimas 30 ----------
+  const TAM_PAGINA = 40;
+  const sitemapUrls = []; // { loc, lastmod }
+  const hoyIso = new Date().toISOString().slice(0, 10);
+
+  // ---------- página de inicio ----------
   const ultimas = registros.slice(0, 30);
+  const websiteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE_URL}/todas.html?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
   const inicioHtml = `
 <section class="hero">
   <div class="hero-texto">
@@ -438,7 +718,7 @@ async function main() {
   </div>
 </section>
 <section class="lista">
-  ${ultimas.map(tarjeta).join("\n") || "<p>Todavía no hay datos. El sitio se actualiza automáticamente cada día que se publica el BOE.</p>"}
+  ${ultimas.map((it) => tarjeta(it, "")).join("\n") || "<p>Todavía no hay datos. El sitio se actualiza automáticamente cada día que se publica el BOE.</p>"}
 </section>
 <p class="ver-todas"><a href="todas.html">Ver todas las convocatorias →</a></p>`;
 
@@ -450,10 +730,90 @@ async function main() {
       canonical: `${SITE_URL}/`,
       activeNav: "inicio",
       bodyHtml: inicioHtml,
+      jsonLd: [websiteLd],
     })
   );
+  sitemapUrls.push({ loc: `${SITE_URL}/`, lastmod: hoyIso });
 
-  // ---------- página "todas" con filtro por JS ----------
+  // ---------- ficha individual por cada convocatoria ----------
+  for (const item of registros) {
+    await writeFile(path.join(DOCS_DIR, "oposicion", `${item.id}.html`), paginaOposicion(item, "../"));
+    sitemapUrls.push({ loc: `${SITE_URL}/oposicion/${item.id}.html`, lastmod: item.fecha_publicacion });
+  }
+
+  // ---------- categorías: hub + páginas paginadas por categoría ----------
+  const porCategoria = {};
+  for (const r of registros) {
+    (porCategoria[r.categoria] ??= []).push(r);
+  }
+  for (const [catId, label] of Object.entries(CATEGORIA_LABELS)) {
+    const itemsCat = porCategoria[catId] ?? [];
+    const paginas = paginar(itemsCat, TAM_PAGINA);
+    for (let i = 0; i < paginas.length; i++) {
+      const pageItems = paginas[i];
+      await writeFile(
+        path.join(DOCS_DIR, "categoria", nombreArchivo(catId, i)),
+        paginaCategoriaListado(catId, label, pageItems, i, paginas.length, "../")
+      );
+      sitemapUrls.push({
+        loc: `${SITE_URL}/categoria/${nombreArchivo(catId, i)}`,
+        lastmod: pageItems[0]?.fecha_publicacion ?? hoyIso,
+      });
+    }
+  }
+
+
+  const conteoPorCategoria = {};
+  for (const r of registros) conteoPorCategoria[r.categoria] = (conteoPorCategoria[r.categoria] ?? 0) + 1;
+  const categoriasHtml = `
+<section class="hero hero-compacta">
+  <h1>Categorías de oposiciones</h1>
+</section>
+<section class="lista-categorias">
+  ${Object.entries(CATEGORIA_LABELS)
+    .map(
+      ([id, label]) =>
+        `<a class="categoria-card" href="categoria/${id}.html">
+           <span class="categoria-nombre">${label}</span>
+           <span class="categoria-count">${conteoPorCategoria[id] ?? 0}</span>
+         </a>`
+    )
+    .join("\n")}
+</section>`;
+  await writeFile(
+    path.join(DOCS_DIR, "categorias.html"),
+    layout({
+      title: `Categorías de oposiciones — ${SITE_NAME}`,
+      description: "Explora las convocatorias de oposiciones por categoría: policía, sanidad, docencia, justicia y más.",
+      canonical: `${SITE_URL}/categorias.html`,
+      activeNav: "categorias",
+      bodyHtml: categoriasHtml,
+    })
+  );
+  sitemapUrls.push({ loc: `${SITE_URL}/categorias.html`, lastmod: hoyIso });
+
+  // ---------- archivo mensual paginado ----------
+  const porMes = {};
+  for (const r of registros) (porMes[claveMes(r.fecha_publicacion)] ??= []).push(r);
+  const clavesMeses = Object.keys(porMes).sort().reverse();
+  for (const clave of clavesMeses) {
+    const paginas = paginar(porMes[clave], TAM_PAGINA);
+    for (let i = 0; i < paginas.length; i++) {
+      const pageItems = paginas[i];
+      await writeFile(
+        path.join(DOCS_DIR, "archivo", nombreArchivo(clave, i)),
+        paginaArchivoMes(clave, pageItems, i, paginas.length, "../")
+      );
+      sitemapUrls.push({ loc: `${SITE_URL}/archivo/${nombreArchivo(clave, i)}`, lastmod: pageItems[0]?.fecha_publicacion ?? hoyIso });
+    }
+  }
+  const mesesInfo = clavesMeses.map((clave) => ({ clave, total: porMes[clave].length }));
+  await writeFile(path.join(DOCS_DIR, "archivo", "index.html"), paginaArchivoIndex(mesesInfo, "../"));
+  sitemapUrls.push({ loc: `${SITE_URL}/archivo/index.html`, lastmod: hoyIso });
+
+  // ---------- "todas.html": las más recientes, con buscador cliente ----------
+  const LIMITE_TODAS = 300;
+  const recientes = registros.slice(0, LIMITE_TODAS);
   const todasHtml = `
 <section class="hero hero-compacta">
   <div class="hero-texto">
@@ -465,10 +825,11 @@ async function main() {
         ${Object.entries(CATEGORIA_LABELS).map(([id, label]) => `<option value="${id}">${label}</option>`).join("")}
       </select>
     </div>
+    <p class="hero-nota">Mostrando las ${recientes.length} convocatorias más recientes.${registros.length > LIMITE_TODAS ? ` Para convocatorias anteriores, consulta el <a href="archivo/index.html">archivo completo por meses</a>.` : ""}</p>
   </div>
 </section>
 <section class="lista" id="lista-completa">
-  ${registros.map(tarjeta).join("\n")}
+  ${recientes.map((it) => tarjeta(it, "")).join("\n")}
 </section>
 <script src="buscador.js"></script>`;
 
@@ -476,133 +837,42 @@ async function main() {
     path.join(DOCS_DIR, "todas.html"),
     layout({
       title: `Todas las convocatorias de oposiciones — ${SITE_NAME}`,
-      description: "Listado completo y filtrable de convocatorias de oposiciones publicadas en el BOE.",
+      description: "Listado buscable de las convocatorias de oposiciones más recientes publicadas en el BOE, con acceso al archivo histórico completo.",
       canonical: `${SITE_URL}/todas.html`,
       activeNav: "todas",
       bodyHtml: todasHtml,
     })
   );
+  sitemapUrls.push({ loc: `${SITE_URL}/todas.html`, lastmod: hoyIso });
 
-  // ---------- página de categorías ----------
-  const conteoPorCategoria = {};
-  for (const r of registros) {
-    conteoPorCategoria[r.categoria] = (conteoPorCategoria[r.categoria] ?? 0) + 1;
+  // ---------- páginas de contenido propio (recursos, guía, FAQ, glosario, boletines, legal) ----------
+  const paginasEstaticas = [
+    ["recursos.html", `Recursos para opositores — ${SITE_NAME}`, "Guía, preguntas frecuentes, glosario de términos y boletines oficiales autonómicos para quienes preparan una oposición.", "recursos", paginaRecursos()],
+    ["guia.html", `Guía para preparar una oposición — ${SITE_NAME}`, "Guía general sobre tipos de proceso selectivo, requisitos, fases de una convocatoria y consejos de planificación para opositar en España.", "recursos", paginaGuia()],
+    ["faq.html", `Preguntas frecuentes sobre oposiciones — ${SITE_NAME}`, "Respuestas a las dudas más habituales sobre plazos, requisitos y el proceso de oposiciones en España.", "recursos", paginaFaq()],
+    ["glosario.html", `Glosario de términos de oposiciones — ${SITE_NAME}`, "Diccionario de los términos más habituales en las bases de una convocatoria de empleo público: turno libre, autobaremo, OEP y más.", "recursos", paginaGlosario()],
+    ["boletines.html", `Boletines oficiales autonómicos — ${SITE_NAME}`, "Enlaces directos a los boletines oficiales de cada comunidad autónoma española, para convocatorias que no se publican en el BOE.", "recursos", paginaBoletines()],
+    ["aviso-legal.html", `Aviso legal — ${SITE_NAME}`, "Aviso legal del sitio.", "", paginaAvisoLegal()],
+    ["privacidad.html", `Política de privacidad y cookies — ${SITE_NAME}`, "Política de privacidad y uso de cookies, incluida la publicidad de terceros.", "", paginaPrivacidad()],
+  ];
+  for (const [archivo, title, description, activeNav, bodyHtml] of paginasEstaticas) {
+    await writeFile(
+      path.join(DOCS_DIR, archivo),
+      layout({ title, description, canonical: `${SITE_URL}/${archivo}`, activeNav, bodyHtml })
+    );
+    sitemapUrls.push({ loc: `${SITE_URL}/${archivo}`, lastmod: hoyIso });
   }
-  const categoriasHtml = `
-<section class="hero hero-compacta">
-  <h1>Categorías de oposiciones</h1>
-</section>
-<section class="lista-categorias">
-  ${Object.entries(CATEGORIA_LABELS)
-    .map(
-      ([id, label]) =>
-        `<a class="categoria-card" href="todas.html#${id}" data-jump="${id}">
-           <span class="categoria-nombre">${label}</span>
-           <span class="categoria-count">${conteoPorCategoria[id] ?? 0}</span>
-         </a>`
-    )
-    .join("\n")}
-</section>`;
-
-  await writeFile(
-    path.join(DOCS_DIR, "categorias.html"),
-    layout({
-      title: `Categorías de oposiciones — ${SITE_NAME}`,
-      description: "Explora las convocatorias de oposiciones por categoría: policía, sanidad, docencia, justicia y más.",
-      canonical: `${SITE_URL}/categorias.html`,
-      activeNav: "categorias",
-      bodyHtml: categoriasHtml,
-    })
-  );
-
-  // ---------- páginas de contenido propio (guía, FAQ, legal) ----------
-  await writeFile(
-    path.join(DOCS_DIR, "recursos.html"),
-    layout({
-      title: `Recursos para opositores — ${SITE_NAME}`,
-      description: "Guía, preguntas frecuentes, glosario de términos y boletines oficiales autonómicos para quienes preparan una oposición.",
-      canonical: `${SITE_URL}/recursos.html`,
-      activeNav: "recursos",
-      bodyHtml: paginaRecursos(),
-    })
-  );
-
-  await writeFile(
-    path.join(DOCS_DIR, "guia.html"),
-    layout({
-      title: `Guía para preparar una oposición — ${SITE_NAME}`,
-      description: "Guía general sobre tipos de proceso selectivo, requisitos, fases de una convocatoria y consejos de planificación para opositar en España.",
-      canonical: `${SITE_URL}/guia.html`,
-      activeNav: "recursos",
-      bodyHtml: paginaGuia(),
-    })
-  );
-
-  await writeFile(
-    path.join(DOCS_DIR, "faq.html"),
-    layout({
-      title: `Preguntas frecuentes sobre oposiciones — ${SITE_NAME}`,
-      description: "Respuestas a las dudas más habituales sobre plazos, requisitos y el proceso de oposiciones en España.",
-      canonical: `${SITE_URL}/faq.html`,
-      activeNav: "recursos",
-      bodyHtml: paginaFaq(),
-    })
-  );
-
-  await writeFile(
-    path.join(DOCS_DIR, "glosario.html"),
-    layout({
-      title: `Glosario de términos de oposiciones — ${SITE_NAME}`,
-      description: "Diccionario de los términos más habituales en las bases de una convocatoria de empleo público: turno libre, autobaremo, OEP y más.",
-      canonical: `${SITE_URL}/glosario.html`,
-      activeNav: "recursos",
-      bodyHtml: paginaGlosario(),
-    })
-  );
-
-  await writeFile(
-    path.join(DOCS_DIR, "boletines.html"),
-    layout({
-      title: `Boletines oficiales autonómicos — ${SITE_NAME}`,
-      description: "Enlaces directos a los boletines oficiales de cada comunidad autónoma española, para convocatorias que no se publican en el BOE.",
-      canonical: `${SITE_URL}/boletines.html`,
-      activeNav: "recursos",
-      bodyHtml: paginaBoletines(),
-    })
-  );
-
-  await writeFile(
-    path.join(DOCS_DIR, "aviso-legal.html"),
-    layout({
-      title: `Aviso legal — ${SITE_NAME}`,
-      description: "Aviso legal del sitio.",
-      canonical: `${SITE_URL}/aviso-legal.html`,
-      activeNav: "",
-      bodyHtml: paginaAvisoLegal(),
-    })
-  );
-
-  await writeFile(
-    path.join(DOCS_DIR, "privacidad.html"),
-    layout({
-      title: `Política de privacidad y cookies — ${SITE_NAME}`,
-      description: "Política de privacidad y uso de cookies, incluida la publicidad de terceros.",
-      canonical: `${SITE_URL}/privacidad.html`,
-      activeNav: "",
-      bodyHtml: paginaPrivacidad(),
-    })
-  );
 
   // ---------- JSON público (por si en el futuro quieres una app o widget) ----------
   await writeFile(path.join(DOCS_DIR, "oposiciones.json"), JSON.stringify(registros, null, 2));
 
-  // ---------- sitemap.xml básico ----------
-  const urls = ["/", "/todas.html", "/categorias.html", "/recursos.html", "/guia.html", "/faq.html", "/glosario.html", "/boletines.html", "/aviso-legal.html", "/privacidad.html"].map(
-    (u) => `<url><loc>${SITE_URL}${u}</loc></url>`
-  );
+  // ---------- sitemap.xml completo, con lastmod ----------
+  const xmlUrls = sitemapUrls
+    .map((u) => `<url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></url>`)
+    .join("\n");
   await writeFile(
     path.join(DOCS_DIR, "sitemap.xml"),
-    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>`
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${xmlUrls}\n</urlset>`
   );
 
   await writeFile(
@@ -610,7 +880,7 @@ async function main() {
     `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`
   );
 
-  console.log(`Sitio generado en ${DOCS_DIR} con ${registros.length} convocatorias.`);
+  console.log(`Sitio generado en ${DOCS_DIR} con ${registros.length} convocatorias, ${sitemapUrls.length} URLs en el sitemap.`);
 }
 
 main().catch((err) => {

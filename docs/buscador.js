@@ -4,7 +4,13 @@
   const filtroCategoria = document.getElementById("filtro-categoria");
   const tarjetas = Array.from(document.querySelectorAll("#lista-completa .tarjeta"));
 
-  // Si venimos de /categorias.html#id, preseleccionamos esa categoría
+  // Preselecciona categoría desde /categorias.html#id, y término de búsqueda desde ?q=
+  // (esto último es lo que permite que el cuadro de búsqueda de Google, si llega a
+  // activarse, funcione: target "todas.html?q={search_term_string}").
+  const params = new URLSearchParams(window.location.search);
+  const qParam = params.get("q");
+  if (qParam && buscador) buscador.value = qParam;
+
   const hash = window.location.hash.replace("#", "");
   if (hash && filtroCategoria) {
     filtroCategoria.value = hash;
