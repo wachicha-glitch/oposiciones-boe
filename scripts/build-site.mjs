@@ -20,6 +20,27 @@ const SITE_URL = "https://boeoposiciones.es"; // dominio propio
 // Cuando cambies de cuenta o Google te dé un snippet distinto, solo hay que tocar esta línea.
 const ADSENSE_SNIPPET = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2534713372103040" crossorigin="anonymous"></script>`;
 
+// Google tag (gtag.js / Analytics). Incluye el "Consent Mode" en modo denegado por
+// defecto: hasta que la persona acepte el banner de cookies, no se activa el
+// almacenamiento de analítica ni de anuncios. cookies.js actualiza este estado
+// cuando la persona acepta o rechaza.
+const GA_MEASUREMENT_ID = "G-WPC55CZR3C";
+const GA_SNIPPET = `<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied'
+  });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"></script>
+<script>
+  gtag('js', new Date());
+  gtag('config', '${GA_MEASUREMENT_ID}');
+</script>`;
+
 const CATEGORIA_LABELS = {
   "policia-guardia-civil": "Policía y Guardia Civil",
   "bomberos": "Bomberos",
@@ -74,6 +95,7 @@ function layout({ title, description, canonical, activeNav, bodyHtml, base = "",
 <meta name="twitter:title" content="${escapeHtml(title)}">
 <meta name="twitter:description" content="${escapeHtml(description)}">
 <meta name="twitter:image" content="${SITE_URL}/og-image.png">
+${GA_SNIPPET}
 ${ADSENSE_SNIPPET}
 ${ldScripts}
 </head>

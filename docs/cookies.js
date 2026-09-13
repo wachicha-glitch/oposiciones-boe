@@ -26,6 +26,17 @@
     }
   }
 
+  function actualizarConsentModeGoogle(valor) {
+    if (typeof window.gtag !== "function") return;
+    const estado = valor === "aceptado" ? "granted" : "denied";
+    window.gtag("consent", "update", {
+      ad_storage: estado,
+      ad_user_data: estado,
+      ad_personalization: estado,
+      analytics_storage: estado,
+    });
+  }
+
   function guardar(valor) {
     try {
       localStorage.setItem(CLAVE, JSON.stringify({ valor, fecha: new Date().toISOString() }));
@@ -34,6 +45,7 @@
       // simplemente no persistimos; el banner volverá a aparecer, que es
       // el comportamiento seguro por defecto.
     }
+    actualizarConsentModeGoogle(valor);
     document.dispatchEvent(new CustomEvent("cookies:consentimiento", { detail: valor }));
     ocultarBanner();
   }
@@ -73,6 +85,11 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
-    if (!obtenerRegistro()) mostrarBanner();
+    const registro = obtenerRegistro();
+    if (!registro) {
+      mostrarBanner();
+    } else {
+      actualizarConsentModeGoogle(registro.valor);
+    }
   });
 })();
