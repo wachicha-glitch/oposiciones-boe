@@ -6,6 +6,7 @@
 
 import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
+import { ARTICULOS } from "./articulos.mjs";
 
 const ROOT = process.cwd();
 const DATA_FILE = path.join(ROOT, "data", "oposiciones.json");
@@ -118,7 +119,7 @@ ${bodyHtml}
 <footer class="pie">
   <div class="contenedor">
     <p>Datos obtenidos automáticamente del <a href="https://www.boe.es/datosabiertos/api/api.php" target="_blank" rel="noopener">API de datos abiertos del BOE</a> (Agencia Estatal Boletín Oficial del Estado). Este sitio no es un canal oficial; consulta siempre el <a href="https://www.boe.es" target="_blank" rel="noopener">BOE</a> para el texto legal completo antes de tomar decisiones.</p>
-    <p class="pie-links"><a href="${base}aviso-legal.html">Aviso legal</a> · <a href="${base}privacidad.html">Política de privacidad</a> · <button type="button" class="enlace-cookies" onclick="window.consentimientoCookies && window.consentimientoCookies.mostrarBanner()">Gestionar cookies</button> · <a href="${base}recursos.html">Recursos</a> · <a href="${base}guia.html">Guía</a> · <a href="${base}faq.html">FAQ</a> · <a href="${base}glosario.html">Glosario</a> · <a href="${base}boletines.html">Boletines autonómicos</a></p>
+    <p class="pie-links"><a href="${base}aviso-legal.html">Aviso legal</a> · <a href="${base}privacidad.html">Política de privacidad</a> · <button type="button" class="enlace-cookies" onclick="window.consentimientoCookies && window.consentimientoCookies.mostrarBanner()">Gestionar cookies</button> · <a href="${base}recursos.html">Recursos</a> · <a href="${base}articulos/index.html">Artículos</a> · <a href="${base}guia.html">Guía</a> · <a href="${base}faq.html">FAQ</a> · <a href="${base}glosario.html">Glosario</a> · <a href="${base}boletines.html">Boletines autonómicos</a></p>
   </div>
 </footer>
 <script src="${base}menu.js"></script>
@@ -392,6 +393,7 @@ function paginaBoletines() {
 
 function paginaRecursos() {
   const recursos = [
+    { href: "articulos/index.html", titulo: "Artículos y guías en profundidad", desc: "Cómo empezar a opositar, grupos de clasificación, plazos y dónde se publican las convocatorias." },
     { href: "guia.html", titulo: "Guía general de oposiciones", desc: "Tipos de proceso selectivo, requisitos, fases y consejos de planificación." },
     { href: "faq.html", titulo: "Preguntas frecuentes", desc: "Dudas habituales sobre plazos, requisitos y funcionamiento del proceso." },
     { href: "glosario.html", titulo: "Glosario de términos", desc: "Qué significa cada palabra que aparece en las bases de una convocatoria." },
@@ -568,15 +570,105 @@ function paginaPrivacidad() {
 </article>`;
 }
 
+// Detecta de qué TIPO de trámite se trata a partir del título, para poder explicar
+// a la persona qué significa exactamente ese anuncio (no todos son convocatorias nuevas).
+function detectarTipoTramite(titulo) {
+  const t = (titulo || "").toLowerCase();
+  if (t.includes("relación provisional") || t.includes("lista provisional") || t.includes("admitidas y excluidas") || t.includes("admitidos y excluidos")) return "admitidos";
+  if (t.includes("relación definitiva") || t.includes("lista definitiva")) return "definitiva";
+  if (t.includes("tribunal") || t.includes("órgano de selección") || t.includes("composición")) return "tribunal";
+  if (t.includes("corrigen errores") || t.includes("corrección de errores")) return "correccion";
+  if (t.includes("nombra") || t.includes("nombramiento") || t.includes("adjudica")) return "nombramiento";
+  if (t.includes("fecha") || t.includes("lugar de celebración") || t.includes("se convoca a los aspirantes")) return "llamamiento";
+  if (t.includes("concurso de traslados") || t.includes("proveer puestos de trabajo por el sistema de concurso")) return "traslados";
+  if (t.includes("amplía") || t.includes("plazo")) return "plazo";
+  return "convocatoria";
+}
+
+const TRAMITE_TEXTO = {
+  convocatoria: {
+    etiqueta: "Convocatoria de proceso selectivo",
+    parrafo: "Este anuncio es una convocatoria: abre oficialmente un proceso selectivo y marca el inicio del plazo para presentar solicitudes. En el texto completo encontrarás el número de plazas, los requisitos de acceso, la titulación exigida, el temario, el sistema de selección y la forma de presentar la instancia.",
+    siguiente: "Si te interesa, lo primero es comprobar la fecha exacta de publicación y contar desde ahí el plazo de presentación (normalmente 20 días hábiles, aunque cada convocatoria fija el suyo). Revisa también si cumples los requisitos de titulación y si hay que abonar tasa de inscripción.",
+  },
+  admitidos: {
+    etiqueta: "Lista provisional de admitidos y excluidos",
+    parrafo: "Este anuncio no abre un proceso nuevo: publica la relación provisional de personas admitidas y excluidas de un proceso selectivo que ya estaba en marcha. Si te presentaste, aquí es donde puedes comprobar si tu solicitud ha sido aceptada y, en caso de exclusión, cuál es el motivo.",
+    siguiente: "Si apareces como excluido o no apareces en la lista, tienes un plazo limitado para subsanar el error o presentar alegaciones. Ese plazo se indica en el propio texto y suele ser corto, así que conviene revisarlo cuanto antes.",
+  },
+  definitiva: {
+    etiqueta: "Lista definitiva de admitidos",
+    parrafo: "Este anuncio publica la relación definitiva de personas admitidas a un proceso selectivo, después de haberse resuelto las alegaciones a la lista provisional. A partir de aquí ya no suele ser posible subsanar errores en la solicitud.",
+    siguiente: "Comprueba que figuras en la lista y localiza en el texto la fecha, hora y lugar del primer ejercicio, que a menudo se anuncia en la misma resolución o en una posterior.",
+  },
+  tribunal: {
+    etiqueta: "Composición del tribunal calificador",
+    parrafo: "Este anuncio designa a las personas que formarán el tribunal u órgano de selección encargado de diseñar, corregir y calificar las pruebas de un proceso selectivo.",
+    siguiente: "Como aspirante, esta información es relevante sobre todo si concurre alguna causa de abstención o recusación (por ejemplo, relación personal o profesional con algún miembro del tribunal), que puede alegarse en el plazo que indique la resolución.",
+  },
+  correccion: {
+    etiqueta: "Corrección de errores",
+    parrafo: "Este anuncio corrige errores detectados en una resolución publicada anteriormente. Puede afectar a datos tan relevantes como el número de plazas, los requisitos, el temario o los plazos del proceso.",
+    siguiente: "Es importante leer tanto esta corrección como la resolución original a la que se refiere, ya que solo la combinación de ambas refleja las condiciones vigentes del proceso.",
+  },
+  nombramiento: {
+    etiqueta: "Nombramiento o adjudicación de destinos",
+    parrafo: "Este anuncio corresponde a la fase final de un proceso selectivo: el nombramiento de las personas que lo han superado o la adjudicación de los destinos correspondientes.",
+    siguiente: "Si has superado el proceso, aquí se detallan los plazos y la documentación necesaria para la toma de posesión. Si no participaste, este anuncio indica que ese proceso concreto ya está cerrado.",
+  },
+  llamamiento: {
+    etiqueta: "Fecha y lugar de celebración de las pruebas",
+    parrafo: "Este anuncio comunica cuándo y dónde se celebrarán uno o varios ejercicios de un proceso selectivo ya convocado.",
+    siguiente: "Anota la fecha y comprueba qué documentación de identificación debes llevar el día del examen, así como si hay indicaciones específicas sobre material permitido.",
+  },
+  traslados: {
+    etiqueta: "Concurso de provisión de puestos de trabajo",
+    parrafo: "Este anuncio no es una oposición de acceso libre: convoca un concurso para cubrir puestos de trabajo entre personal que ya pertenece a la administración, valorando méritos como la antigüedad, el grado personal o la formación.",
+    siguiente: "Si ya eres personal de esa administración y cumples los requisitos de participación, revisa el baremo de méritos y la relación de puestos ofertados en el texto completo.",
+  },
+  plazo: {
+    etiqueta: "Modificación de plazos",
+    parrafo: "Este anuncio modifica, amplía o aclara los plazos de un proceso selectivo previamente convocado.",
+    siguiente: "Si estabas siguiendo ese proceso, comprueba las fechas nuevas: prevalecen sobre las publicadas originalmente.",
+  },
+};
+
+// Contexto útil por categoría, para que cada ficha aporte algo más que el dato en crudo.
+const CATEGORIA_CONTEXTO = {
+  "policia-guardia-civil": "Los procesos de acceso a cuerpos policiales suelen incluir, además del examen de conocimientos, pruebas físicas con marcas mínimas, pruebas psicotécnicas y de personalidad, un reconocimiento médico según un cuadro de exclusiones específico y, en algunos casos, una entrevista personal. Conviene revisar con antelación los requisitos de estatura, edad y permisos de conducir exigidos.",
+  "bomberos": "Las convocatorias de bomberos combinan habitualmente un examen teórico sobre materias técnicas (construcción, hidráulica, emergencias, normativa) con pruebas físicas exigentes y un reconocimiento médico. Muchas exigen permisos de conducir de categoría superior, que conviene tener tramitados antes de que se cierre el plazo.",
+  "sanidad": "Los procesos de personal sanitario suelen articularse como concurso-oposición: una parte de examen y otra de valoración de méritos (experiencia previa en el sistema público, formación especializada, publicaciones). Además de plazas fijas, muchas convocatorias generan bolsas de trabajo para cubrir sustituciones.",
+  "docencia": "Los procesos de cuerpos docentes y de universidad suelen valorar tanto la prueba de conocimientos como la experiencia docente previa y la formación académica. En el ámbito universitario, los concursos de acceso tienen requisitos específicos de acreditación previa por parte de la agencia evaluadora correspondiente.",
+  "justicia": "Los cuerpos de la Administración de Justicia (tramitación procesal, auxilio judicial, gestión procesal) se convocan habitualmente con un temario extenso de derecho procesal y organización judicial, y con pruebas tipo test y casos prácticos.",
+  "administracion-general": "Los cuerpos generales de la Administración del Estado se estructuran por subgrupos (A1, A2, C1, C2), cada uno con su titulación mínima y su nivel retributivo. El temario suele combinar organización del Estado, derecho administrativo y, en los subgrupos administrativos, ofimática y pruebas prácticas.",
+  "ayuntamientos": "En las convocatorias de administración local, el BOE publica normalmente solo un extracto: el organismo, el número de plazas y una referencia genérica. El detalle del puesto concreto, el temario y las bases completas suelen estar en el boletín provincial o autonómico correspondiente y en la web del propio ayuntamiento o diputación.",
+  "correos-empresas-publicas": "Los procesos de Correos y otras empresas públicas se rigen frecuentemente por convenio colectivo y contratación laboral, no por el régimen funcionarial, lo que cambia tanto el sistema de selección como las condiciones del puesto.",
+  "fuerzas-armadas": "El acceso a las Fuerzas Armadas tiene requisitos propios de edad, condición física y reconocimiento médico, y distintas vías de ingreso según se opte a tropa y marinería, suboficiales u oficiales.",
+  "tecnico-ingenieria": "Los cuerpos técnicos y de ingeniería exigen titulación específica y suelen incluir supuestos prácticos directamente relacionados con la especialidad, además del temario general de organización administrativa.",
+  "otros": "Conviene revisar el texto completo de la convocatoria para conocer el tipo exacto de plaza, los requisitos de titulación y el sistema de selección aplicable.",
+};
+
 // ---------- ficha individual de cada convocatoria ----------
 function paginaOposicion(item, base) {
   const catLabel = CATEGORIA_LABELS[item.categoria] ?? "Otras convocatorias";
   const urlAbs = `${SITE_URL}/oposicion/${item.id}.html`;
+  const tipo = detectarTipoTramite(item.titulo);
+  const tramite = TRAMITE_TEXTO[tipo] ?? TRAMITE_TEXTO.convocatoria;
+  const contexto = CATEGORIA_CONTEXTO[item.categoria] ?? CATEGORIA_CONTEXTO.otros;
+
   const rutaMigas = [
     { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
     { nombre: catLabel, href: `${base}categoria/${item.categoria}.html`, hrefAbs: `${SITE_URL}/categoria/${item.categoria}.html` },
     { nombre: item.id, href: "", hrefAbs: urlAbs },
   ];
+
+  const ambitoTexto = item.ambito === "Ámbito local"
+    ? "Se trata de un proceso de ámbito local, gestionado directamente por la administración convocante."
+    : item.ambito === "Universidades"
+    ? "Se trata de un proceso convocado por una universidad pública, con normativa propia de acceso."
+    : item.ambito === "Estado"
+    ? "Se trata de un proceso de ámbito estatal."
+    : `Se trata de un proceso vinculado al ámbito territorial de ${escapeHtml(item.ambito)}.`;
 
   const body = `
 ${migas(rutaMigas, base)}
@@ -589,12 +681,24 @@ ${migas(rutaMigas, base)}
     <span>${escapeHtml(item.departamento)}</span>
     ${item.ambito ? `<span>${escapeHtml(item.ambito)}</span>` : ""}
   </div>
-  <p>Esta convocatoria fue publicada en el Boletín Oficial del Estado el ${formatearFecha(item.fecha_publicacion)}, por ${escapeHtml(item.departamento)}. Para conocer los requisitos, el plazo de solicitud, el temario y el resto de condiciones, consulta siempre el texto oficial completo:</p>
+
+  <h2>¿Qué es este anuncio?</h2>
+  <p><strong>${escapeHtml(tramite.etiqueta)}.</strong> ${escapeHtml(tramite.parrafo)}</p>
+  <p>Fue publicado en el Boletín Oficial del Estado el ${formatearFecha(item.fecha_publicacion)} por ${escapeHtml(item.departamento)}. ${ambitoTexto}</p>
+
   <div class="ficha-acciones">
     <a href="${item.url_html}" target="_blank" rel="noopener">Ver texto completo en el BOE</a>
     <a href="${item.url_pdf}" class="secundario" target="_blank" rel="noopener">Descargar PDF oficial</a>
   </div>
-  <p class="aviso-contenido">Esta ficha se genera automáticamente a partir de la API oficial del BOE y no sustituye al texto legal. La categoría "${escapeHtml(catLabel)}" es una clasificación orientativa nuestra basada en el título; en convocatorias locales, el tipo exacto de plaza suele detallarse solo dentro del PDF oficial.</p>
+
+  <h2>Qué conviene revisar</h2>
+  <p>${escapeHtml(tramite.siguiente)}</p>
+
+  <h2>Sobre las convocatorias de ${escapeHtml(catLabel.toLowerCase())}</h2>
+  <p>${escapeHtml(contexto)}</p>
+  <p>Puedes consultar el resto de convocatorias de esta categoría en <a href="${base}categoria/${item.categoria}.html">${escapeHtml(catLabel)}</a>, o repasar el funcionamiento general de los procesos selectivos en nuestra <a href="${base}guia.html">guía de oposiciones</a> y en el <a href="${base}glosario.html">glosario de términos</a>.</p>
+
+  <p class="aviso-contenido">Esta ficha se genera automáticamente a partir de la API oficial del BOE y no sustituye al texto legal. La categoría "${escapeHtml(catLabel)}" y el tipo de trámite son clasificaciones orientativas nuestras basadas en el título del anuncio; el contenido vinculante es siempre el del texto oficial enlazado arriba.</p>
 </article>`;
 
   return layout({
@@ -698,6 +802,85 @@ ${migas(rutaMigas, base)}
     description: "Histórico completo de convocatorias de oposiciones del BOE, organizado por mes de publicación.",
     canonical: `${SITE_URL}/archivo/index.html`,
     activeNav: "todas",
+    base,
+    bodyHtml: body,
+    jsonLd: [migasJsonLd(rutaMigas, base)],
+  });
+}
+
+// ---------- artículos de contenido propio ----------
+function paginaArticulo(articulo, base) {
+  const urlAbs = `${SITE_URL}/articulos/${articulo.slug}.html`;
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Artículos", href: `${base}articulos/index.html`, hrefAbs: `${SITE_URL}/articulos/index.html` },
+    { nombre: articulo.titulo, href: "", hrefAbs: urlAbs },
+  ];
+
+  const articuloLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: articulo.titulo,
+    description: articulo.descripcion,
+    datePublished: articulo.fecha,
+    dateModified: articulo.fecha,
+    author: { "@type": "Person", name: "Fernando Torre-Enciso Pérez" },
+    publisher: { "@type": "Organization", name: SITE_NAME },
+    mainEntityOfPage: urlAbs,
+  };
+
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero">
+  <div class="hero-texto">
+    <h1>${escapeHtml(articulo.titulo)}</h1>
+    <p>${escapeHtml(articulo.descripcion)}</p>
+    <p class="hero-nota">Publicado el ${formatearFecha(articulo.fecha)}</p>
+  </div>
+</section>
+<article class="contenido">
+${articulo.cuerpo}
+</article>`;
+
+  return layout({
+    title: `${articulo.titulo} — ${SITE_NAME}`,
+    description: articulo.descripcion.slice(0, 155),
+    canonical: urlAbs,
+    activeNav: "recursos",
+    base,
+    bodyHtml: body,
+    jsonLd: [articuloLd, migasJsonLd(rutaMigas, base)],
+  });
+}
+
+function paginaArticulosIndex(base) {
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Artículos", href: "", hrefAbs: `${SITE_URL}/articulos/index.html` },
+  ];
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero hero-compacta">
+  <div class="hero-texto">
+    <h1>Artículos sobre oposiciones</h1>
+    <p>Guías y explicaciones en profundidad sobre el funcionamiento del empleo público en España.</p>
+  </div>
+</section>
+<section class="lista">
+  ${ARTICULOS.map(
+    (a) => `<article class="tarjeta">
+    <div class="tarjeta-meta"><span class="etiqueta">Artículo</span><span class="fecha">${formatearFecha(a.fecha)}</span></div>
+    <h3 class="tarjeta-titulo"><a href="${base}articulos/${a.slug}.html">${escapeHtml(a.titulo)}</a></h3>
+    <p class="tarjeta-organismo">${escapeHtml(a.descripcion)}</p>
+    <div class="tarjeta-acciones"><a href="${base}articulos/${a.slug}.html">Leer artículo</a></div>
+  </article>`
+  ).join("\n")}
+</section>`;
+  return layout({
+    title: `Artículos sobre oposiciones — ${SITE_NAME}`,
+    description: "Guías en profundidad sobre oposiciones y empleo público: cómo empezar, grupos de clasificación, plazos y dónde se publican las convocatorias.",
+    canonical: `${SITE_URL}/articulos/index.html`,
+    activeNav: "recursos",
     base,
     bodyHtml: body,
     jsonLd: [migasJsonLd(rutaMigas, base)],
@@ -891,6 +1074,15 @@ async function main() {
       layout({ title, description, canonical: `${SITE_URL}/${archivo}`, activeNav, bodyHtml })
     );
     sitemapUrls.push({ loc: `${SITE_URL}/${archivo}`, lastmod: hoyIso });
+  }
+
+  // ---------- artículos de contenido propio ----------
+  await mkdir(path.join(DOCS_DIR, "articulos"), { recursive: true });
+  await writeFile(path.join(DOCS_DIR, "articulos", "index.html"), paginaArticulosIndex("../"));
+  sitemapUrls.push({ loc: `${SITE_URL}/articulos/index.html`, lastmod: hoyIso });
+  for (const articulo of ARTICULOS) {
+    await writeFile(path.join(DOCS_DIR, "articulos", `${articulo.slug}.html`), paginaArticulo(articulo, "../"));
+    sitemapUrls.push({ loc: `${SITE_URL}/articulos/${articulo.slug}.html`, lastmod: articulo.fecha });
   }
 
   // ---------- JSON público (por si en el futuro quieres una app o widget) ----------
