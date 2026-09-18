@@ -7,6 +7,7 @@
 import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { ARTICULOS } from "./articulos.mjs";
+import { COMUNIDAD_LABELS, COMUNIDAD_BOLETIN } from "./comunidades.mjs";
 
 const ROOT = process.cwd();
 const DATA_FILE = path.join(ROOT, "data", "oposiciones.json");
@@ -109,6 +110,7 @@ ${ldScripts}
       <a href="${base}index.html" class="${activeNav === "inicio" ? "activo" : ""}">Inicio</a>
       <a href="${base}todas.html" class="${activeNav === "todas" ? "activo" : ""}">Todas las convocatorias</a>
       <a href="${base}categorias.html" class="${activeNav === "categorias" ? "activo" : ""}">Categorías</a>
+      <a href="${base}comunidades.html" class="${activeNav === "comunidades" ? "activo" : ""}">Comunidades</a>
       <a href="${base}recursos.html" class="${activeNav === "recursos" ? "activo" : ""}">Recursos</a>
     </nav>
   </div>
@@ -130,7 +132,7 @@ ${bodyHtml}
 
 function tarjeta(item, base = "") {
   const cat = CATEGORIA_LABELS[item.categoria] ?? "Otras convocatorias";
-  return `<article class="tarjeta" data-categoria="${item.categoria}" data-ambito="${escapeHtml(item.ambito)}">
+  return `<article class="tarjeta" data-categoria="${item.categoria}" data-comunidad="${item.comunidad ?? "sin-determinar"}" data-ambito="${escapeHtml(item.ambito)}">
   <div class="tarjeta-meta">
     <span class="etiqueta">${escapeHtml(cat)}</span>
     <span class="fecha">${item.id} · ${formatearFecha(item.fecha_publicacion)}</span>
@@ -887,6 +889,98 @@ ${migas(rutaMigas, base)}
   });
 }
 
+// ---------- listado paginado por comunidad autónoma ----------
+function paginaComunidadListado(comId, label, itemsCom, pagina, totalPaginas, base) {
+  const boletin = COMUNIDAD_BOLETIN[comId];
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Comunidades", href: `${base}comunidades.html`, hrefAbs: `${SITE_URL}/comunidades.html` },
+    { nombre: label, href: "", hrefAbs: `${SITE_URL}/comunidad/${comId}.html` },
+  ];
+
+  const prev = pagina > 0 ? `<a href="${nombreArchivo(`${base}comunidad/${comId}`, pagina - 1)}">← Página anterior</a>` : `<span class="deshabilitado">← Página anterior</span>`;
+  const next = pagina < totalPaginas - 1 ? `<a href="${nombreArchivo(`${base}comunidad/${comId}`, pagina + 1)}">Página siguiente →</a>` : `<span class="deshabilitado">Página siguiente →</span>`;
+
+  const intro = comId === "estatal"
+    ? "Convocatorias de ámbito estatal publicadas en el BOE: ministerios, agencias estatales y organismos dependientes de la Administración General del Estado."
+    : comId === "sin-determinar"
+    ? "Convocatorias en las que el título publicado en el BOE no permite deducir con fiabilidad el ámbito territorial. Consulta el texto oficial de cada una para conocer el organismo concreto."
+    : `Convocatorias de oposiciones y empleo público relacionadas con ${label}, publicadas en el Boletín Oficial del Estado. Incluye principalmente convocatorias de ayuntamientos, diputaciones y otros organismos locales de esta comunidad.`;
+
+  const avisoBoletin = boletin && boletin.url
+    ? `<p class="aviso-contenido">Importante: muchas convocatorias de la administración autonómica de ${escapeHtml(label)} (sanidad, educación, cuerpos generales autonómicos) <strong>no se publican en el BOE</strong>, sino en el ${escapeHtml(boletin.nombre)} (${escapeHtml(boletin.sigla)}). Si buscas ese tipo de plazas, consulta también <a href="${boletin.url}" target="_blank" rel="noopener">el boletín oficial de ${escapeHtml(label)}</a>.</p>`
+    : "";
+
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero hero-compacta">
+  <div class="hero-texto">
+    <h1>Oposiciones en ${escapeHtml(label)}</h1>
+    <p>${escapeHtml(intro)}</p>
+  </div>
+</section>
+${avisoBoletin}
+<section class="lista">
+  ${itemsCom.map((it) => tarjeta(it, base)).join("\n") || "<p>Todavía no hay convocatorias registradas para esta comunidad.</p>"}
+</section>
+<nav class="paginacion" aria-label="Paginación">${prev}<span class="pagina-actual">Página ${pagina + 1} de ${totalPaginas}</span>${next}</nav>`;
+
+  return layout({
+    title: `Oposiciones en ${label} — convocatorias del BOE — ${SITE_NAME}${pagina > 0 ? ` (página ${pagina + 1})` : ""}`,
+    description: intro.slice(0, 155),
+    canonical: `${SITE_URL}/comunidad/${nombreArchivo(comId, pagina)}`,
+    activeNav: "comunidades",
+    base,
+    bodyHtml: body,
+    jsonLd: [migasJsonLd(rutaMigas, base), itemListJsonLd(itemsCom, SITE_URL)],
+  });
+}
+
+function paginaComunidadesIndex(conteo, base) {
+  const rutaMigas = [
+    { nombre: "Inicio", href: `${base}index.html`, hrefAbs: `${SITE_URL}/` },
+    { nombre: "Comunidades", href: "", hrefAbs: `${SITE_URL}/comunidades.html` },
+  ];
+  // Autonómicas primero (ordenadas alfabéticamente), y al final estatal / sin determinar.
+  const especiales = ["estatal", "sin-determinar"];
+  const autonomicas = Object.entries(COMUNIDAD_LABELS)
+    .filter(([id]) => !especiales.includes(id))
+    .sort((a, b) => a[1].localeCompare(b[1], "es"));
+
+  const tarjetaCom = ([id, label]) =>
+    `<a class="categoria-card" href="${base}comunidad/${id}.html">
+       <span class="categoria-nombre">${escapeHtml(label)}</span>
+       <span class="categoria-count">${conteo[id] ?? 0}</span>
+     </a>`;
+
+  const body = `
+${migas(rutaMigas, base)}
+<section class="hero hero-compacta">
+  <div class="hero-texto">
+    <h1>Oposiciones por comunidad autónoma</h1>
+    <p>Filtra las convocatorias publicadas en el BOE según el territorio al que corresponden. La comunidad se deduce de la provincia que consta en el propio anuncio oficial.</p>
+  </div>
+</section>
+<div class="lista-categorias">
+  ${autonomicas.map(tarjetaCom).join("\n")}
+</div>
+<h2 class="subtitulo-seccion">Otros ámbitos</h2>
+<div class="lista-categorias">
+  ${especiales.map((id) => tarjetaCom([id, COMUNIDAD_LABELS[id]])).join("\n")}
+</div>
+<p class="aviso-contenido">El BOE publica las convocatorias estatales y un extracto de las de administración local de toda España. Las convocatorias propias de cada administración autonómica (sanidad, educación, cuerpos autonómicos) se publican en su boletín correspondiente: puedes consultarlos en <a href="${base}boletines.html">boletines oficiales autonómicos</a>.</p>`;
+
+  return layout({
+    title: `Oposiciones por comunidad autónoma — ${SITE_NAME}`,
+    description: "Consulta las convocatorias de oposiciones publicadas en el BOE filtradas por comunidad autónoma: Andalucía, Madrid, Cataluña, Galicia y el resto de España.",
+    canonical: `${SITE_URL}/comunidades.html`,
+    activeNav: "comunidades",
+    base,
+    bodyHtml: body,
+    jsonLd: [migasJsonLd(rutaMigas, base)],
+  });
+}
+
 async function main() {
   let registros = [];
   try {
@@ -896,7 +990,7 @@ async function main() {
   }
 
   await mkdir(DOCS_DIR, { recursive: true });
-  for (const carpeta of ["oposicion", "categoria", "archivo"]) {
+  for (const carpeta of ["oposicion", "categoria", "archivo", "comunidad", "articulos"]) {
     await rm(path.join(DOCS_DIR, carpeta), { recursive: true, force: true });
     await mkdir(path.join(DOCS_DIR, carpeta), { recursive: true });
   }
@@ -1005,6 +1099,35 @@ async function main() {
   );
   sitemapUrls.push({ loc: `${SITE_URL}/categorias.html`, lastmod: hoyIso });
 
+  // ---------- comunidades autónomas: hub + páginas paginadas ----------
+  await mkdir(path.join(DOCS_DIR, "comunidad"), { recursive: true });
+  const porComunidad = {};
+  for (const r of registros) {
+    const com = r.comunidad ?? "sin-determinar";
+    (porComunidad[com] ??= []).push(r);
+  }
+  for (const comId of Object.keys(COMUNIDAD_LABELS)) {
+    const itemsCom = porComunidad[comId] ?? [];
+    const paginas = paginar(itemsCom, TAM_PAGINA);
+    for (let i = 0; i < paginas.length; i++) {
+      await writeFile(
+        path.join(DOCS_DIR, "comunidad", nombreArchivo(comId, i)),
+        paginaComunidadListado(comId, COMUNIDAD_LABELS[comId], paginas[i], i, paginas.length, "../")
+      );
+      sitemapUrls.push({
+        loc: `${SITE_URL}/comunidad/${nombreArchivo(comId, i)}`,
+        lastmod: paginas[i][0]?.fecha_publicacion ?? hoyIso,
+      });
+    }
+  }
+  const conteoComunidad = {};
+  for (const r of registros) {
+    const com = r.comunidad ?? "sin-determinar";
+    conteoComunidad[com] = (conteoComunidad[com] ?? 0) + 1;
+  }
+  await writeFile(path.join(DOCS_DIR, "comunidades.html"), paginaComunidadesIndex(conteoComunidad, ""));
+  sitemapUrls.push({ loc: `${SITE_URL}/comunidades.html`, lastmod: hoyIso });
+
   // ---------- archivo mensual paginado ----------
   const porMes = {};
   for (const r of registros) (porMes[claveMes(r.fecha_publicacion)] ??= []).push(r);
@@ -1037,8 +1160,12 @@ async function main() {
         <option value="">Todas las categorías</option>
         ${Object.entries(CATEGORIA_LABELS).map(([id, label]) => `<option value="${id}">${label}</option>`).join("")}
       </select>
+      <select id="filtro-comunidad">
+        <option value="">Todas las comunidades</option>
+        ${Object.entries(COMUNIDAD_LABELS).map(([id, label]) => `<option value="${id}">${label}</option>`).join("")}
+      </select>
     </div>
-    <p class="hero-nota">Mostrando las ${recientes.length} convocatorias más recientes.${registros.length > LIMITE_TODAS ? ` Para convocatorias anteriores, consulta el <a href="archivo/index.html">archivo completo por meses</a>.` : ""}</p>
+    <p class="hero-nota"><span id="contador-resultados">${recientes.length} convocatorias</span> · Mostrando las más recientes.${registros.length > LIMITE_TODAS ? ` Para convocatorias anteriores, consulta el <a href="archivo/index.html">archivo completo por meses</a>.` : ""}</p>
   </div>
 </section>
 <section class="lista" id="lista-completa">

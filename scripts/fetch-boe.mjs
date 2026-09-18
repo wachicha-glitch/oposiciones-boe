@@ -12,6 +12,7 @@
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { detectarComunidad, detectarAmbito } from "./comunidades.mjs";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DATA_FILE = path.join(DATA_DIR, "oposiciones.json");
@@ -78,24 +79,6 @@ function detectarCategoria(texto) {
 }
 
 // Intenta extraer una comunidad autónoma o "Estado" a partir del nombre del departamento.
-const COMUNIDADES = [
-  "andalucía", "aragón", "asturias", "cantabria", "castilla y león", "castilla-la mancha",
-  "cataluña", "extremadura", "galicia", "islas baleares", "canarias", "la rioja",
-  "madrid", "murcia", "navarra", "país vasco", "comunidad valenciana", "valencia", "ceuta", "melilla",
-];
-
-function detectarAmbito(textoCompleto) {
-  const t = (textoCompleto || "").toLowerCase();
-  if (t.includes("ayuntamiento") || t.includes("diputación") || t.includes("cabildo") || t.includes("consell insular") || t.includes("consorcio") || t.includes("mancomunidad")) {
-    return "Ámbito local";
-  }
-  if (t.includes("universidad")) return "Universidades";
-  for (const c of COMUNIDADES) {
-    if (t.includes(c)) return c.charAt(0).toUpperCase() + c.slice(1);
-  }
-  return "Estado";
-}
-
 // -------------------- descarga --------------------
 
 async function descargarSumario(fecha) {
@@ -153,6 +136,7 @@ async function descargarSumario(fecha) {
           url_html: urlHtml,
           categoria: detectarCategoria(textoCompleto),
           ambito: detectarAmbito(textoCompleto),
+          comunidad: detectarComunidad(textoCompleto),
         });
       }
     }
