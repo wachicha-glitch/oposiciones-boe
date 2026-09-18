@@ -202,6 +202,7 @@ a { color: var(--oro); }
 }
 .categoria-card:hover { border-color: var(--oro); }
 .categoria-count { font-family: var(--mono); background: var(--papel-alt); border-radius: var(--radio); padding: 2px 9px; font-size: 0.82rem; color: var(--tinta-suave); }
+.subtitulo-seccion { font-family: var(--serif); font-size: 1.1rem; color: var(--tinta-suave); margin: 24px 0 0; font-weight: 600; }
 
 /* ---------- contenido (guía / legal) ---------- */
 .contenido { padding-bottom: 44px; max-width: 680px; }
