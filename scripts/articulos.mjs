@@ -214,4 +214,376 @@ export const ARTICULOS = [
 
 <p class="aviso-contenido">Esta información es orientativa. La organización de los boletines oficiales y la distribución de competencias entre administraciones puede cambiar; consulta siempre la fuente oficial correspondiente.</p>`,
   },
+
+  {
+    slug: "como-estudiar-un-temario-extenso",
+    titulo: "Cómo estudiar un temario extenso sin olvidar lo anterior",
+    descripcion:
+      "Técnicas de estudio aplicadas a temarios de oposición: repaso espaciado, práctica de evocación, cómo planificar vueltas y qué hacer cuando se te olvida todo.",
+    fecha: "2026-09-19",
+    cuerpo: `
+<p>El problema central de una oposición no es entender el temario. Es <strong>retenerlo</strong>. Casi cualquiera puede comprender un tema de derecho administrativo leyéndolo con atención; lo difícil es recordarlo con precisión ocho meses después, junto con otros ciento cincuenta temas. Este artículo trata de cómo se organiza el estudio para que eso sea posible.</p>
+
+<h2>Por qué se olvida lo estudiado</h2>
+<p>La memoria funciona por refuerzo: aquello que no se recupera, se debilita. Un tema leído una vez con mucha atención se olvida casi igual de rápido que uno leído con poca atención, si en ninguno de los dos casos se vuelve a recuperar después.</p>
+<p>Esto tiene una consecuencia práctica que mucha gente descubre demasiado tarde: <strong>el tiempo dedicado a primera lectura está sobrevalorado y el dedicado a repaso, infravalorado</strong>. Leer despacio y subrayando mucho da sensación de estar aprendiendo, pero esa sensación no se corresponde con lo que se recordará meses después.</p>
+
+<h2>El repaso espaciado</h2>
+<p>La idea es sencilla: en lugar de repasar un tema muchas veces seguidas, se repasa con intervalos crecientes. Por ejemplo, repasar un tema al día siguiente de estudiarlo, luego a la semana, luego al mes, luego a los tres meses.</p>
+<p>Cada repaso refuerza la huella de memoria y permite que el siguiente pueda estar más lejos en el tiempo. El resultado es que, con menos horas totales de repaso, se retiene mucho más que repitiendo el mismo tema cinco veces en una tarde.</p>
+<p>Llevarlo a la práctica en una oposición implica algo incómodo: <strong>nunca estás estudiando solo temas nuevos</strong>. Cada sesión mezcla material nuevo con repaso de material antiguo. Al principio cuesta, porque avanzas más despacio por el temario, pero es lo que evita llegar al examen habiendo olvidado la primera mitad.</p>
+
+<h2>Recuperar en vez de releer</h2>
+<p>Hay una diferencia importante entre volver a leer un tema y tratar de recordarlo sin mirarlo. Releer es cómodo y da sensación de dominio; intentar reproducir el tema de memoria es incómodo y revela lagunas. Precisamente por eso, lo segundo es mucho más eficaz.</p>
+<p>Formas concretas de hacerlo:</p>
+<ul>
+  <li><strong>Cerrar el tema y escribir el esquema de memoria.</strong> Luego comparar con el original y marcar lo que faltaba.</li>
+  <li><strong>Explicárselo en voz alta</strong> a alguien, o a nadie. Si no consigues explicarlo con frases completas, no lo tienes.</li>
+  <li><strong>Preguntas de autoevaluación</strong> sobre cada epígrafe, formuladas por ti mismo mientras estudias, para responderlas en el repaso siguiente.</li>
+</ul>
+<p>El objetivo no es sentirse bien durante el estudio, sino descubrir cuanto antes qué no se sabe.</p>
+
+<h2>Las "vueltas" al temario</h2>
+<p>Entre opositores es habitual hablar de "vueltas": pasadas completas al temario. Una planificación razonable contempla varias, con objetivos distintos en cada una.</p>
+<ol>
+  <li><strong>Primera vuelta:</strong> comprender. Leer, entender la lógica de cada tema, hacer un esquema propio. Es la más lenta y la que más desanima, porque parece que no se retiene nada. Es normal.</li>
+  <li><strong>Segunda vuelta:</strong> fijar. Repasar sobre el esquema propio, no sobre el texto completo. Empezar a memorizar listas, plazos, artículos concretos.</li>
+  <li><strong>Tercera vuelta y siguientes:</strong> consolidar y detectar puntos débiles. Cada vez más rápido, cada vez más apoyada en test y en recuperación activa.</li>
+</ol>
+<p>Un error frecuente es planificar la primera vuelta ocupando casi todo el tiempo disponible. Si el examen es en diez meses y la primera vuelta te lleva nueve, llegas sin haber consolidado nada.</p>
+
+<h2>Cuánto estudiar al día</h2>
+<p>No hay una cifra correcta, pero sí dos principios bastante sólidos.</p>
+<p>El primero: <strong>la regularidad importa más que el volumen</strong>. Un patrón de tres horas diarias sostenido durante meses produce mejores resultados que picos de diez horas seguidos de días en blanco, porque el repaso espaciado necesita frecuencia.</p>
+<p>El segundo: <strong>las sesiones muy largas rinden cada vez menos</strong>. A partir de cierto punto, la concentración cae y el tiempo adicional produce poco aprendizaje real. Es más productivo dividir el estudio en bloques con descansos breves que encadenar horas seguidas.</p>
+
+<h2>Qué hacer cuando sientes que no avanzas</h2>
+<p>Hay una fase, normalmente a mitad de preparación, en la que la sensación es de estancamiento: llevas meses estudiando y te parece que no dominas nada con seguridad. Es extremadamente común y no suele indicar que estés haciendo algo mal.</p>
+<p>Lo que ayuda en esa fase:</p>
+<ul>
+  <li><strong>Medir en vez de intuir.</strong> Haz un test completo de un bloque ya estudiado. La sensación subjetiva de "no sé nada" casi nunca coincide con el resultado objetivo.</li>
+  <li><strong>Revisar la planificación, no la capacidad.</strong> Si vas lento, casi siempre es un problema de método o de calendario, no de aptitud.</li>
+  <li><strong>Aceptar la incomodidad del repaso.</strong> La sensación de fluidez al releer es engañosa; la dificultad al recuperar es señal de que el aprendizaje está ocurriendo.</li>
+</ul>
+
+<h2>Preparar el examen, no solo el temario</h2>
+<p>En las semanas finales conviene desplazar el peso del estudio desde el temario hacia la simulación del examen: tests completos, cronometrados, con las mismas reglas de penalización que tendrá la prueba real. Eso entrena decisiones que no se entrenan estudiando (gestión del tiempo, cuándo arriesgar una respuesta dudosa, cómo no bloquearse) y reduce mucho el factor sorpresa del día del examen.</p>
+
+<p class="aviso-contenido">Este artículo recoge principios generales de estudio aplicados a la preparación de oposiciones. Cada persona y cada temario son distintos; conviene adaptar estas ideas a tu situación y, si preparas con academia, contrastarlas con las indicaciones de tu preparador.</p>`,
+  },
+
+  {
+    slug: "bolsas-de-trabajo-y-interinidad",
+    titulo: "Bolsas de trabajo e interinidad en el empleo público: cómo funcionan",
+    descripcion:
+      "Qué es una bolsa de trabajo, cómo se entra, qué diferencia hay entre funcionario de carrera, interino y personal laboral, y qué implica trabajar como interino.",
+    fecha: "2026-09-19",
+    cuerpo: `
+<p>No todo el empleo público se cubre con plazas fijas. Una parte muy grande del personal de las administraciones españolas trabaja mediante figuras temporales, y la vía de entrada habitual a esas figuras son las <strong>bolsas de trabajo</strong>. Entender cómo funcionan es útil incluso si tu objetivo final es la plaza fija.</p>
+
+<h2>Funcionario de carrera, interino y personal laboral</h2>
+<p>Antes de hablar de bolsas conviene distinguir las figuras principales:</p>
+<ul>
+  <li><strong>Funcionario de carrera:</strong> ha superado un proceso selectivo y tiene una relación estatutaria permanente con la administración. Es la figura con mayor estabilidad.</li>
+  <li><strong>Funcionario interino:</strong> ocupa temporalmente una plaza de funcionario por circunstancias tasadas (vacante sin cubrir, sustitución, exceso o acumulación de tareas, programas temporales). Hace el mismo trabajo, pero su vínculo es temporal.</li>
+  <li><strong>Personal laboral:</strong> se rige por el Estatuto de los Trabajadores y por el convenio colectivo correspondiente, no por el régimen funcionarial. Puede ser fijo o temporal.</li>
+</ul>
+<p>Las condiciones de trabajo del interino y del funcionario de carrera suelen ser muy parecidas en el día a día: mismo horario, mismas funciones, retribución equivalente. La diferencia sustancial está en la estabilidad y en algunos derechos de carrera.</p>
+
+<h2>Qué es una bolsa de trabajo</h2>
+<p>Una bolsa de trabajo es un listado de personas, ordenado por puntuación, del que la administración va tirando cuando necesita cubrir temporalmente un puesto. Cuando surge una necesidad, se llama a quien esté primero en la lista y que esté disponible.</p>
+<p>La utilidad es evidente: permite cubrir una baja por enfermedad o una vacante urgente en días, sin convocar un proceso selectivo completo cada vez.</p>
+
+<h2>Cómo se entra en una bolsa</h2>
+<p>Hay varias vías, y conviene conocerlas porque no todas exigen el mismo esfuerzo:</p>
+<ul>
+  <li><strong>Como resultado de un proceso selectivo.</strong> Es la más común: quienes superan algún ejercicio de una oposición sin llegar a obtener plaza pasan a formar la bolsa, ordenados por la nota obtenida. Esto significa que presentarte a una oposición puede darte trabajo aunque no saques plaza.</li>
+  <li><strong>Mediante convocatoria específica de bolsa.</strong> Algunas administraciones convocan bolsas directamente, normalmente por concurso de méritos o con una prueba más sencilla que una oposición completa.</li>
+  <li><strong>Por integración de bolsas anteriores</strong> o por acuerdos específicos, según la normativa de cada administración.</li>
+</ul>
+
+<h2>Cómo funcionan los llamamientos</h2>
+<p>Las bases de cada bolsa regulan este punto, y conviene leerlas con atención porque hay diferencias importantes entre administraciones. Aspectos típicos:</p>
+<ul>
+  <li><strong>Orden de llamamiento:</strong> normalmente por puntuación, de mayor a menor.</li>
+  <li><strong>Forma de contacto:</strong> teléfono, correo electrónico o sede electrónica, con plazos de respuesta muy breves (a veces 24 o 48 horas).</li>
+  <li><strong>Consecuencias de rechazar una oferta:</strong> aquí está el detalle crítico. En algunas bolsas, rechazar sin causa justificada te manda al final de la lista o incluso te excluye. En otras, simplemente pasas turno. Las causas justificadas (enfermedad, estar trabajando ya, maternidad) suelen estar tasadas.</li>
+  <li><strong>Qué pasa al terminar un contrato:</strong> según la bolsa, puedes volver a tu posición original o pasar al final de la lista.</li>
+</ul>
+<p>Por eso, cuando entras en una bolsa, merece la pena leer sus bases con el mismo cuidado que una convocatoria: determinan si te conviene aceptar o no una oferta concreta.</p>
+
+<h2>Ventajas de pasar por la interinidad</h2>
+<p>Para quien está opositando, trabajar como interino tiene efectos que van más allá del sueldo:</p>
+<ul>
+  <li><strong>Experiencia que puntúa.</strong> En procesos de concurso-oposición, el tiempo trabajado en la administración suele valorarse en la fase de concurso. Es una de las razones por las que los interinos tienen ventaja en los procesos de estabilización.</li>
+  <li><strong>Conocimiento práctico del puesto.</strong> Muchos supuestos prácticos de examen se entienden mucho mejor cuando has tramitado expedientes reales.</li>
+  <li><strong>Acceso a promoción interna</strong> en algunos casos, según la normativa aplicable.</li>
+</ul>
+
+<h2>Y los inconvenientes</h2>
+<p>Conviene ser realista también con el otro lado:</p>
+<ul>
+  <li><strong>Inestabilidad.</strong> El vínculo puede terminar cuando la plaza se cubre definitivamente o cuando finaliza la causa que justificó el nombramiento.</li>
+  <li><strong>Menos tiempo para estudiar.</strong> Es la tensión más habitual: trabajar como interino da experiencia y dinero, pero reduce las horas disponibles para preparar la oposición que te daría la plaza fija.</li>
+  <li><strong>Movilidad limitada</strong> respecto al funcionario de carrera en cuanto a concursos de traslados y carrera profesional.</li>
+</ul>
+
+<h2>Los procesos de estabilización</h2>
+<p>En los últimos años se han desarrollado procesos específicos destinados a reducir la temporalidad en el empleo público, convocando plazas que llevaban mucho tiempo ocupadas de forma temporal. Estos procesos suelen dar un peso considerable a la experiencia previa en la administración convocante, lo que los hace especialmente favorables para el personal interino de larga duración, y correlativamente más difíciles para quien viene de fuera.</p>
+<p>Si te encuentras con una convocatoria que menciona "estabilización de empleo temporal", conviene mirar con atención el baremo de méritos antes de decidir si merece la pena presentarse: la proporción entre fase de oposición y fase de concurso puede cambiar mucho tus posibilidades reales.</p>
+
+<p class="aviso-contenido">El régimen concreto de las bolsas de trabajo, los llamamientos y la interinidad lo fija la normativa de cada administración y las bases de cada bolsa. Esta explicación es general y orientativa: consulta siempre las bases oficiales.</p>`,
+  },
+
+  {
+    slug: "oposiciones-administracion-local-ayuntamientos",
+    titulo: "Oposiciones en ayuntamientos y diputaciones: cómo encontrarlas y qué esperar",
+    descripcion:
+      "Por qué las convocatorias locales son distintas, dónde están las bases completas, qué tipo de plazas se convocan y por qué a veces hay menos competencia.",
+    fecha: "2026-09-19",
+    cuerpo: `
+<p>La administración local emplea a una parte muy considerable del personal público español, y sus convocatorias tienen una lógica distinta a la de los grandes procesos estatales. Para quien busca trabajo público cerca de casa, suelen ser la vía más realista, pero también la más dispersa y difícil de seguir.</p>
+
+<h2>Qué se convoca en el ámbito local</h2>
+<p>Ayuntamientos, diputaciones provinciales, cabildos, consejos insulares, mancomunidades y consorcios convocan una variedad enorme de plazas:</p>
+<ul>
+  <li><strong>Administrativas:</strong> auxiliar administrativo, administrativo, técnico de administración general.</li>
+  <li><strong>Policía local</strong> y, en municipios grandes, <strong>bomberos</strong>.</li>
+  <li><strong>Técnicas:</strong> arquitecto, ingeniero, técnico de medio ambiente, informático.</li>
+  <li><strong>Servicios sociales, cultura y deporte:</strong> trabajador social, educador, técnico de juventud, socorrista, monitor deportivo.</li>
+  <li><strong>Servicios y mantenimiento:</strong> operario, conductor, jardinero, peón, conserje.</li>
+</ul>
+<p>Esta diversidad es una de las razones por las que merece la pena seguir el ámbito local: hay perfiles que prácticamente no existen en la administración estatal.</p>
+
+<h2>El problema de la dispersión</h2>
+<p>Hay más de ocho mil municipios en España. Cada uno puede convocar sus propias plazas, con sus propias bases, su propio temario y sus propios plazos. No existe un portal único que lo recoja todo de forma completa.</p>
+<p>Lo que sí existe es una regla de publicación que ayuda mucho: <strong>los extractos de las convocatorias locales se publican en el BOE</strong>. Es decir, aunque las bases completas estén en el boletín provincial, en el BOE aparece un anuncio breve indicando qué organismo convoca y cuántas plazas.</p>
+
+<h2>Cómo leer un extracto del BOE</h2>
+<p>Un anuncio local típico en el BOE dice algo parecido a: "Resolución de [fecha], del Ayuntamiento de [municipio] ([provincia]), referente a la convocatoria para proveer varias plazas".</p>
+<p>Fíjate en lo que <em>no</em> dice: no indica qué plazas, ni los requisitos, ni el temario, ni el plazo. Ese anuncio cumple la función de <strong>avisar de que el proceso existe</strong>, no de detallarlo.</p>
+<p>Para conocer el detalle hay que ir a las bases completas, que estarán en:</p>
+<ol>
+  <li>El <strong>boletín oficial de la provincia</strong> correspondiente, donde se publican íntegras.</li>
+  <li>La <strong>web del propio ayuntamiento o diputación</strong>, normalmente en un apartado de "empleo público", "oposiciones" o "recursos humanos".</li>
+  <li>En ocasiones, también el <strong>boletín autonómico</strong>.</li>
+</ol>
+<p>Esta cadena de saltos es tediosa, pero es la única forma de saber realmente a qué te estás presentando.</p>
+
+<h2>Por qué a veces hay menos competencia</h2>
+<p>Los grandes procesos estatales atraen a decenas de miles de aspirantes de toda España. Una convocatoria de dos plazas de administrativo en un municipio de diez mil habitantes atrae a un número mucho menor, por razones geográficas evidentes: mucha gente no se presenta a un puesto que implicaría mudarse.</p>
+<p>Esto no significa que sean fáciles (la ratio de plazas también es mucho menor), pero sí que las probabilidades pueden ser mejores de lo que sugiere la intuición, especialmente si vives en la zona o estás dispuesto a desplazarte.</p>
+
+<h2>Peculiaridades de los procesos locales</h2>
+<p>Algunas diferencias respecto a los procesos estatales que conviene tener en cuenta:</p>
+<ul>
+  <li><strong>Temario más corto pero más específico.</strong> Suele incluir bloques de normativa local (régimen local, organización municipal) y, con frecuencia, temas sobre el propio municipio: su historia, su organización, su territorio.</li>
+  <li><strong>Calendarios menos previsibles.</strong> Un ayuntamiento pequeño puede tardar más en resolver las fases del proceso que un organismo estatal con estructura dedicada a ello.</li>
+  <li><strong>Mayor peso de pruebas prácticas</strong> en muchos perfiles: manejo de aplicaciones ofimáticas, redacción de documentos administrativos reales, pruebas de oficio en puestos de mantenimiento.</li>
+  <li><strong>Mucha variedad en el peso de los méritos.</strong> Algunos procesos locales valoran de forma notable la experiencia previa en ese mismo ayuntamiento, lo que conviene comprobar en el baremo antes de invertir meses de preparación.</li>
+</ul>
+
+<h2>Cómo hacer un seguimiento realista</h2>
+<p>Intentar vigilar ocho mil municipios no es viable. Una estrategia manejable:</p>
+<ol>
+  <li><strong>Define tu radio geográfico.</strong> Decide a qué distancia estás dispuesto a trabajar y quédate con las administraciones dentro de ese radio.</li>
+  <li><strong>Sigue el boletín de tu provincia</strong>, que es donde aparecerán íntegras las bases de esas administraciones.</li>
+  <li><strong>Usa el BOE como radar general</strong>, que recoge extractos de toda España y permite detectar procesos que se te habrían escapado. Esta web hace ese seguimiento de forma automática y te permite <a href="../comunidades.html">filtrar por comunidad autónoma</a>.</li>
+  <li><strong>Revisa las Ofertas de Empleo Público</strong> de los ayuntamientos que te interesen: anticipan con meses de antelación qué plazas van a convocar.</li>
+</ol>
+
+<p class="aviso-contenido">Cada administración local tiene su propia normativa y sus propias bases, que prevalecen sobre cualquier información general. Consulta siempre el texto oficial completo de la convocatoria que te interese.</p>`,
+  },
+
+  {
+    slug: "compaginar-trabajo-y-oposicion",
+    titulo: "Compaginar trabajo y oposición: cómo organizarse cuando no tienes todo el día",
+    descripcion:
+      "Planificación realista para opositar trabajando: cuántas horas hacen falta, cómo aprovechar semanas laborales, y cómo evitar el desgaste en preparaciones largas.",
+    fecha: "2026-09-19",
+    cuerpo: `
+<p>La imagen habitual del opositor es la de alguien que estudia a jornada completa. En la práctica, una parte enorme de quienes se presentan lo hacen compaginando la preparación con un empleo, con cuidados familiares o con ambos. Es más lento, pero perfectamente viable si se planifica de otra manera.</p>
+
+<h2>Lo primero: ajustar el horizonte temporal</h2>
+<p>El error más dañino al opositar trabajando es copiar la planificación de alguien que estudia a jornada completa. Si un temario está pensado para cubrirse en nueve meses con seis horas diarias, intentar cubrirlo en nueve meses con dos horas diarias no es ambición: es garantía de frustración.</p>
+<p>La adaptación correcta no es estudiar peor, sino <strong>extender el calendario</strong>. Puede significar apuntar a la convocatoria siguiente en vez de a la próxima. Es una decisión estratégica, no una renuncia: presentarse sin el temario cubierto suele producir peores resultados que presentarse un año después con él consolidado.</p>
+
+<h2>Proteger un bloque fijo</h2>
+<p>Cuando el tiempo es escaso, el mayor enemigo no es la falta de horas sino la <strong>irregularidad</strong>. Estudiar "cuando pueda" acaba significando estudiar cuando no ha surgido nada más, y siempre surge algo.</p>
+<p>Lo que funciona es tratar el estudio como una cita innegociable: un bloque fijo, a la misma hora, los mismos días. Puede ser de hora y media a primera hora de la mañana, o de dos horas al salir del trabajo. El momento concreto importa menos que la constancia.</p>
+<p>Dos horas diarias sostenidas cinco días a la semana son unas cuarenta horas al mes. En un año, cerca de quinientas. Es tiempo suficiente para preparar muchas oposiciones, siempre que esas horas se usen bien.</p>
+
+<h2>Aprovechar los fines de semana sin quemarse</h2>
+<p>Es tentador concentrar todo el esfuerzo en sábados y domingos, pero conviene tener cuidado con dos cosas.</p>
+<p>La primera es que <strong>el aprendizaje necesita frecuencia</strong>: ocho horas de sábado no equivalen a dos horas durante cuatro días, porque el repaso espaciado necesita contacto repetido a lo largo del tiempo.</p>
+<p>La segunda es el desgaste. Una preparación larga que elimina por completo el descanso y la vida social termina, en muchos casos, en abandono. Reservar deliberadamente algún tiempo libre no es una debilidad: es lo que hace sostenible una preparación de uno o dos años.</p>
+<p>Un reparto más equilibrado suele ser: bloques cortos entre semana para material nuevo y repaso, y una sesión más larga el fin de semana para consolidar, hacer tests completos o cubrir lo que haya quedado pendiente.</p>
+
+<h2>Usar bien los tiempos muertos</h2>
+<p>Trabajando, aparecen huecos que no sirven para estudiar en profundidad pero sí para repasar: trayectos, esperas, pausas. Son inútiles para enfrentarse a un tema nuevo, pero muy útiles para:</p>
+<ul>
+  <li>Repasar esquemas ya elaborados.</li>
+  <li>Hacer tandas cortas de test.</li>
+  <li>Escuchar un tema grabado por ti mismo.</li>
+  <li>Recordar mentalmente la estructura de un tema sin material delante, que es una forma potente de recuperación activa.</li>
+</ul>
+<p>Conviene no exagerar su importancia (no se prepara una oposición solo en los trayectos), pero sumados a lo largo de meses aportan bastante.</p>
+
+<h2>Priorizar cuando no llega para todo</h2>
+<p>Con tiempo limitado hay que aceptar que no todo el temario recibirá la misma atención. Criterios razonables para repartir el esfuerzo:</p>
+<ul>
+  <li><strong>Peso en el examen.</strong> Si un bloque representa la mitad de las preguntas, merece más de la mitad del esfuerzo.</li>
+  <li><strong>Dificultad personal.</strong> Los temas que peor se te dan necesitan más repasos, aunque sea más agradable repasar los que ya dominas.</li>
+  <li><strong>Estabilidad del contenido.</strong> Los temas de normativa muy cambiante conviene consolidarlos más cerca del examen; los conceptuales aguantan mejor desde el principio.</li>
+</ul>
+
+<h2>El permiso y la conciliación</h2>
+<p>Merece la pena comprobar si tu situación laboral permite algún tipo de flexibilidad: en algunos convenios colectivos existen permisos retribuidos para concurrir a exámenes de oposición el día de la prueba, y la normativa laboral contempla determinados derechos en materia de formación. Las condiciones concretas dependen del convenio aplicable y del tipo de contrato, así que conviene consultarlo con tu representación sindical o con recursos humanos con antelación, no la semana del examen.</p>
+
+<h2>Señales de que hay que corregir el rumbo</h2>
+<p>Una preparación larga compaginada con trabajo tiene riesgos reales de desgaste. Conviene revisar la planificación si aparecen de forma sostenida:</p>
+<ul>
+  <li>Sesiones de estudio que se convierten en tiempo delante del temario sin avanzar.</li>
+  <li>Abandono completo del descanso, el ejercicio o las relaciones personales.</li>
+  <li>Sensación persistente de que nada de lo estudiado se retiene, sin haberlo comprobado con tests objetivos.</li>
+</ul>
+<p>Ninguna de esas señales significa que no sirvas para opositar. Suelen significar que el calendario es demasiado exigente para el tiempo real disponible, y que conviene ajustarlo antes que forzarlo.</p>
+
+<p class="aviso-contenido">Este artículo ofrece orientaciones generales de organización. Las condiciones laborales, permisos y derechos concretos dependen de tu convenio y contrato: consúltalos por la vía correspondiente.</p>`,
+  },
+
+  {
+    slug: "que-hacer-si-te-excluyen-de-una-oposicion",
+    titulo: "Qué hacer si te excluyen de una oposición: subsanación y recursos",
+    descripcion:
+      "Motivos habituales de exclusión, cómo subsanar en plazo, qué recursos administrativos existen y cómo actuar ante un error del tribunal.",
+    fecha: "2026-09-19",
+    cuerpo: `
+<p>Aparecer como excluido en la lista de admitidos de una oposición es un susto considerable, sobre todo después de meses de preparación. La buena noticia es que la mayoría de exclusiones son por motivos formales y tienen arreglo, siempre que se actúe dentro del plazo. Este artículo explica el procedimiento.</p>
+
+<h2>Motivos habituales de exclusión</h2>
+<p>Las causas más frecuentes son administrativas, no de fondo:</p>
+<ul>
+  <li><strong>Tasa no abonada o mal abonada:</strong> importe incorrecto, pago fuera de plazo, o justificante no aportado.</li>
+  <li><strong>Documentación incompleta:</strong> falta la acreditación de la titulación, del grado de discapacidad si concurres por ese cupo, o de la exención de tasa alegada.</li>
+  <li><strong>Errores en los datos:</strong> DNI mal escrito, fecha de nacimiento incorrecta, turno de acceso mal marcado.</li>
+  <li><strong>Solicitud presentada fuera de plazo.</strong> Esta es la más grave, porque normalmente no es subsanable.</li>
+  <li><strong>No cumplir un requisito de acceso:</strong> titulación insuficiente, edad, u otros requisitos específicos del cuerpo. Tampoco suele ser subsanable si efectivamente no se cumple.</li>
+</ul>
+<p>En términos prácticos, todo lo que sea un defecto de acreditación suele poder corregirse; lo que sea un incumplimiento real del requisito, no.</p>
+
+<h2>El plazo de subsanación</h2>
+<p>Cuando se publica la <strong>lista provisional de admitidos y excluidos</strong>, se abre un plazo para subsanar defectos y presentar alegaciones. Las bases de cada convocatoria fijan su duración (es frecuente un plazo de diez días hábiles, pero varía).</p>
+<p>Tres cosas importantes sobre ese plazo:</p>
+<ol>
+  <li><strong>Empieza a contar desde la publicación</strong>, no desde que te enteras. Nadie te va a avisar personalmente.</li>
+  <li><strong>Es corto.</strong> Si el motivo de exclusión requiere conseguir un documento que tarda en emitirse, hay que ponerse el mismo día.</li>
+  <li><strong>Si no subsanas, la exclusión se vuelve definitiva</strong> al publicarse la lista definitiva, y a partir de ahí las vías son bastante más complicadas.</li>
+</ol>
+<p>Por eso conviene, en cuanto presentes una solicitud, anotar en el calendario una revisión para comprobar la lista provisional cuando esté previsto que salga.</p>
+
+<h2>Cómo subsanar</h2>
+<p>El procedimiento concreto lo indican las bases, pero el esquema general es:</p>
+<ol>
+  <li><strong>Identifica el motivo exacto.</strong> Las listas suelen incluir un código de exclusión con su leyenda. Si no lo entiendes, conviene preguntar al órgano convocante antes de enviar nada.</li>
+  <li><strong>Prepara la documentación</strong> que acredite lo que falta, o el justificante corregido.</li>
+  <li><strong>Presenta un escrito de subsanación</strong> dirigido al órgano convocante, identificando claramente la convocatoria, tu nombre y DNI, el motivo de exclusión y lo que aportas para corregirlo.</li>
+  <li><strong>Regístralo por la vía indicada</strong> (habitualmente sede electrónica) y <strong>guarda el justificante de registro</strong>, con su fecha y número.</li>
+</ol>
+<p>Ese justificante es tu prueba de haber actuado en plazo. Consérvalo hasta el final del proceso.</p>
+
+<h2>Si la exclusión es un error del órgano convocante</h2>
+<p>A veces la exclusión no se debe a un fallo tuyo, sino a un error de tramitación: un pago que sí se realizó y no consta, un documento presentado que no se registró correctamente. El procedimiento es el mismo (escrito de alegaciones en el plazo de subsanación), pero aquí es especialmente importante aportar pruebas: justificante bancario, justificante de registro de la solicitud original, capturas del envío telemático.</p>
+
+<h2>Recursos administrativos</h2>
+<p>Si la lista definitiva mantiene la exclusión y consideras que es incorrecta, quedan las vías de recurso administrativo. Las principales son:</p>
+<ul>
+  <li><strong>Recurso de reposición:</strong> se presenta ante el mismo órgano que dictó el acto, cuando este pone fin a la vía administrativa.</li>
+  <li><strong>Recurso de alzada:</strong> se presenta ante el órgano superior jerárquico, cuando el acto no pone fin a la vía administrativa.</li>
+</ul>
+<p>Las propias resoluciones suelen indicar al final qué recurso cabe, ante qué órgano y en qué plazo. Ese pie de recurso es la referencia a seguir. Agotada la vía administrativa, quedaría la vía contencioso-administrativa, que ya implica procedimiento judicial y conviene valorar con asesoramiento jurídico.</p>
+
+<h2>Discrepancias con la calificación o con el tribunal</h2>
+<p>Un caso distinto es no estar de acuerdo con una nota, con una pregunta del examen o con la valoración de méritos. Aquí también hay cauces:</p>
+<ul>
+  <li><strong>Impugnación de preguntas:</strong> muchas convocatorias abren, tras publicar la plantilla provisional de respuestas, un plazo para alegar contra preguntas concretas. Es un trámite habitual y no excepcional: si una pregunta tiene dos respuestas defendibles, alegarlo con fundamento normativo puede prosperar.</li>
+  <li><strong>Revisión de examen:</strong> en pruebas no tipo test, suele existir un procedimiento de vista y revisión del ejercicio.</li>
+  <li><strong>Alegaciones al baremo de méritos:</strong> cuando la puntuación de la fase de concurso no recoge correctamente algo que acreditaste.</li>
+</ul>
+<p>En todos los casos, los tribunales tienen un margen de discrecionalidad técnica amplio en la valoración, por lo que las alegaciones que prosperan suelen ser las que señalan errores objetivos y verificables, no las que expresan desacuerdo general con la calificación.</p>
+
+<h2>Recomendaciones prácticas</h2>
+<ul>
+  <li>Guarda <strong>todo</strong>: solicitud, justificante de registro, justificante de pago, correos recibidos.</li>
+  <li>Anota las fechas previsibles de cada publicación y revisa activamente; no esperes avisos.</li>
+  <li>Actúa siempre <strong>dentro del plazo</strong>, aunque el escrito no sea perfecto. Un escrito mejorable en plazo vale más que uno impecable fuera de plazo.</li>
+  <li>Ante cuestiones complejas o con mucho en juego, considera asesoramiento jurídico especializado en función pública.</li>
+</ul>
+
+<p class="aviso-contenido">Este artículo describe el funcionamiento general del procedimiento administrativo en procesos selectivos y no constituye asesoramiento jurídico. Los plazos, requisitos y vías de recurso concretos los determinan las bases de cada convocatoria y la normativa aplicable.</p>`,
+  },
+
+  {
+    slug: "oferta-de-empleo-publico-que-es",
+    titulo: "Oferta de Empleo Público: qué es y por qué conviene seguirla",
+    descripcion:
+      "Qué es una OEP, en qué se diferencia de una convocatoria, cuándo se publica y cómo usarla para anticiparte y elegir a qué oposición presentarte.",
+    fecha: "2026-09-19",
+    cuerpo: `
+<p>Entre las personas que empiezan a opositar es habitual confundir dos cosas distintas: la <strong>Oferta de Empleo Público</strong> y la <strong>convocatoria</strong>. La diferencia importa, porque cada una sirve para algo distinto y llega en un momento distinto.</p>
+
+<h2>Qué es la Oferta de Empleo Público</h2>
+<p>La Oferta de Empleo Público (OEP) es el documento mediante el cual una administración aprueba <strong>cuántas plazas va a convocar</strong> en un periodo determinado y de qué cuerpos, escalas o categorías.</p>
+<p>Es, en esencia, una declaración de intenciones con efectos jurídicos: fija el número máximo de plazas que podrán convocarse. Pero <strong>no abre ningún plazo, no permite presentar ninguna solicitud y no contiene ni requisitos ni temario</strong>.</p>
+
+<h2>En qué se diferencia de una convocatoria</h2>
+<p>La convocatoria es el acto que pone en marcha el proceso selectivo concreto: establece requisitos, temario, sistema de selección, plazo de presentación y tribunal. Es a lo que te presentas.</p>
+<p>La secuencia habitual es:</p>
+<ol>
+  <li>Se aprueba y publica la <strong>Oferta de Empleo Público</strong>: "esta administración convocará X plazas de tal cuerpo".</li>
+  <li>Meses después (a veces bastantes), se publica la <strong>convocatoria</strong> de esas plazas, con todo el detalle.</li>
+  <li>Se abre el <strong>plazo de solicitudes</strong>.</li>
+  <li>Se desarrolla el <strong>proceso selectivo</strong>.</li>
+</ol>
+<p>Entre el paso 1 y el paso 2 puede transcurrir mucho tiempo. La normativa establece plazos máximos para ejecutar las ofertas, pero en la práctica es frecuente que pase cerca de un año entre que se aprueba una OEP y que salen las convocatorias correspondientes.</p>
+
+<h2>Por qué merece la pena seguirlas</h2>
+<p>Aquí está lo útil: la OEP te da <strong>información con meses de antelación</strong> sobre qué es probable que se convoque. Para alguien que está decidiendo a qué prepararse, eso cambia bastante las cosas.</p>
+<p>Si esperas a que salga la convocatoria para empezar, tienes normalmente veinte días hábiles para presentar la solicitud y unos pocos meses hasta el examen, con el temario sin tocar. Si has seguido la OEP, puedes haber empezado a preparar con un año de margen.</p>
+<p>Usos concretos:</p>
+<ul>
+  <li><strong>Elegir cuerpo con criterio.</strong> Si dos cuerpos te encajan y uno tiene ochenta plazas ofertadas y el otro seis, es información relevante.</li>
+  <li><strong>Detectar administraciones activas.</strong> Un ayuntamiento que aprueba OEP todos los años es más previsible que uno que lleva cinco sin convocar nada.</li>
+  <li><strong>Planificar el calendario de estudio</strong> con una estimación razonable de cuándo llegará el examen.</li>
+</ul>
+
+<h2>Dónde se publican</h2>
+<p>Cada administración publica su OEP en el boletín que le corresponde:</p>
+<ul>
+  <li>La <strong>OEP estatal</strong>, en el BOE.</li>
+  <li>Las <strong>OEP autonómicas</strong>, en el boletín de cada comunidad.</li>
+  <li>Las <strong>OEP locales</strong>, en el boletín provincial y en la web del propio ayuntamiento o diputación.</li>
+</ul>
+<p>Suelen aprobarse dentro del ejercicio presupuestario correspondiente, por lo que el primer semestre del año concentra buena parte de las publicaciones, aunque hay bastante variación entre administraciones.</p>
+
+<h2>Cómo interpretar las cifras</h2>
+<p>Un par de matices que evitan expectativas equivocadas:</p>
+<ul>
+  <li><strong>Las plazas de la OEP se reparten entre turnos.</strong> Una oferta de cien plazas puede incluir turno libre, promoción interna y cupo de reserva por discapacidad. El número disponible para acceso libre es menor que la cifra total.</li>
+  <li><strong>No todas las plazas ofertadas se acaban convocando</strong> en el plazo previsto, ni todas las convocadas se cubren. Conviene tomar la OEP como una buena estimación, no como una garantía.</li>
+  <li><strong>Los procesos de estabilización se ofertan aparte</strong> en muchos casos, y tienen reglas propias que pueden dar mucho peso a la experiencia previa. Si ves una oferta grande, merece la pena comprobar de qué tipo de proceso se trata antes de entusiasmarse.</li>
+</ul>
+
+<h2>De la OEP a la convocatoria: qué hacer mientras</h2>
+<p>Si detectas en una OEP algo que te interesa, el tiempo hasta la convocatoria es valioso:</p>
+<ol>
+  <li><strong>Consigue el temario de la última convocatoria</strong> de ese mismo cuerpo. Es muy habitual que se mantenga con pocos cambios, así que puedes empezar a estudiar sobre él.</li>
+  <li><strong>Comprueba que cumples los requisitos</strong> que se exigieron la vez anterior, y tramita con tiempo lo que falte (titulación homologada, certificados, permisos de conducir).</li>
+  <li><strong>Consigue certificado digital</strong> si no lo tienes, porque casi todas las solicitudes son ya telemáticas y tramitarlo lleva su tiempo.</li>
+  <li><strong>Localiza exámenes anteriores</strong> del cuerpo, cuando estén disponibles públicamente.</li>
+</ol>
+<p>Llegar a la publicación de la convocatoria con el temario ya iniciado y el papeleo resuelto es, en la práctica, una de las mayores ventajas competitivas que se pueden conseguir sin estudiar más horas.</p>
+
+<p class="aviso-contenido">El contenido, calendario y ejecución de las ofertas de empleo público dependen de cada administración y de la normativa presupuestaria aplicable. Esta información es orientativa: consulta siempre las publicaciones oficiales.</p>`,
+  },
 ];
