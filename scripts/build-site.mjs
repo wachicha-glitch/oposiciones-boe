@@ -457,7 +457,37 @@ function tituloCorto(item) {
   return `${cat} — ${item.departamento}`;
 }
 
+// Extrae el municipio del título cuando el BOE lo incluye, p. ej.
+// "del Ayuntamiento de Bueu (Pontevedra)" -> "Bueu". Devuelve null si no hay.
+function extraerMunicipio(titulo) {
+  const m = (titulo || "").match(/(?:Ayuntamiento|Concello|Ajuntament|Ayuntamiento de la Villa) de ([^(,]+?)\s*\(/i);
+  if (!m) return null;
+  // Algunos municipios vienen en forma bilingüe "Xàbia/Jávea": nos quedamos con la primera.
+  return m[1].split("/")[0].trim();
+}
+
+// Número de días tras la publicación a partir del cual consideramos que una
+// convocatoria probablemente ya ha cerrado su plazo de solicitudes. La mayoría
+// fijan 20 días hábiles (unas 4 semanas naturales); dejamos margen amplio.
+const DIAS_VIGENCIA_JOBPOSTING = 45;
+
+// Google solo admite JobPosting en páginas que describen UNA oferta de empleo
+// ABIERTA. Marcar como oferta una lista de admitidos, un tribunal o una
+// convocatoria ya cerrada infringe sus directrices y puede acarrear una acción
+// manual. Por eso solo lo emitimos para convocatorias nuevas y recientes.
+function debeEmitirJobPosting(item, hoyIso) {
+  if (detectarTipoTramite(item.titulo) !== "convocatoria") return false;
+  const dias = (new Date(hoyIso) - new Date(item.fecha_publicacion)) / 86400000;
+  return dias >= 0 && dias <= DIAS_VIGENCIA_JOBPOSTING;
+}
+
 function jobPostingJsonLd(item, urlAbs) {
+  const region =
+    item.comunidad && !["estatal", "sin-determinar"].includes(item.comunidad)
+      ? COMUNIDAD_LABELS[item.comunidad]
+      : null;
+  const municipio = extraerMunicipio(item.titulo);
+
   const ld = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
@@ -480,15 +510,15 @@ function jobPostingJsonLd(item, urlAbs) {
       address: {
         "@type": "PostalAddress",
         addressCountry: "ES",
-        ...(item.ambito && !["Estado", "Ámbito local", "Universidades"].includes(item.ambito)
-          ? { addressRegion: item.ambito }
-          : {}),
+        ...(region ? { addressRegion: region } : {}),
+        ...(municipio ? { addressLocality: municipio } : {}),
       },
     },
   };
-  // No incluimos validThrough: no conocemos con certeza la fecha límite real de cada
-  // convocatoria (varía por bases), y es preferible omitir un dato estructurado a
-  // inventar una fecha aproximada que Google podría considerar inexacta.
+  // Omitimos deliberadamente validThrough, baseSalary y streetAddress: no los
+  // conocemos con certeza a partir del sumario del BOE, y Google considera
+  // peor un dato estructurado inexacto que uno ausente. Son campos
+  // recomendados, no obligatorios.
   return ld;
 }
 
@@ -651,7 +681,7 @@ const CATEGORIA_CONTEXTO = {
 };
 
 // ---------- ficha individual de cada convocatoria ----------
-function paginaOposicion(item, base) {
+function paginaOposicion(item, base, hoyIso) {
   const catLabel = CATEGORIA_LABELS[item.categoria] ?? "Otras convocatorias";
   const urlAbs = `${SITE_URL}/oposicion/${item.id}.html`;
   const tipo = detectarTipoTramite(item.titulo);
@@ -710,7 +740,9 @@ ${migas(rutaMigas, base)}
     activeNav: "",
     base,
     bodyHtml: body,
-    jsonLd: [jobPostingJsonLd(item, urlAbs), migasJsonLd(rutaMigas, base)],
+    jsonLd: debeEmitirJobPosting(item, hoyIso)
+      ? [jobPostingJsonLd(item, urlAbs), migasJsonLd(rutaMigas, base)]
+      : [migasJsonLd(rutaMigas, base)],
   });
 }
 
@@ -1044,7 +1076,7 @@ async function main() {
 
   // ---------- ficha individual por cada convocatoria ----------
   for (const item of registros) {
-    await writeFile(path.join(DOCS_DIR, "oposicion", `${item.id}.html`), paginaOposicion(item, "../"));
+    await writeFile(path.join(DOCS_DIR, "oposicion", `${item.id}.html`), paginaOposicion(item, "../", hoyIso));
     sitemapUrls.push({ loc: `${SITE_URL}/oposicion/${item.id}.html`, lastmod: item.fecha_publicacion });
   }
 
