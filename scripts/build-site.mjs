@@ -20,7 +20,14 @@ const SITE_URL = "https://boeoposiciones.es"; // dominio propio
 // Script de verificación / Auto ads de Google AdSense.
 // Se inserta en el <head> de TODAS las páginas (lo exige Google para verificar el sitio).
 // Cuando cambies de cuenta o Google te dé un snippet distinto, solo hay que tocar esta línea.
-const ADSENSE_SNIPPET = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2534713372103040" crossorigin="anonymous"></script>`;
+// ID de editor de AdSense. Se usa en DOS sitios (el script del <head> y el
+// fichero ads.txt), y ambos DEBEN coincidir con la cuenta desde la que se
+// solicita la aprobación: si no coinciden, Google lo considera información
+// imprecisa sobre el sitio. Por eso está centralizado aquí: cambiar esta línea
+// actualiza los dos.
+const ADSENSE_PUB_ID = "pub-8860906281161147";
+const ADSENSE_SNIPPET = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${ADSENSE_PUB_ID}" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-${ADSENSE_PUB_ID}">`;
 
 // Google tag (gtag.js / Analytics). Incluye el "Consent Mode" en modo denegado por
 // defecto: hasta que la persona acepte el banner de cookies, no se activa el
@@ -1368,7 +1375,7 @@ async function main() {
   // ---------- ads.txt: obligatorio para que AdSense active la monetización ----------
   await writeFile(
     path.join(DOCS_DIR, "ads.txt"),
-    `google.com, pub-2534713372103040, DIRECT, f08c47fec0942fa0\n`
+    `google.com, ${ADSENSE_PUB_ID}, DIRECT, f08c47fec0942fa0\n`
   );
 
   console.log(`Sitio generado en ${DOCS_DIR} con ${registros.length} convocatorias, ${sitemapUrls.length} URLs en el sitemap.`);
