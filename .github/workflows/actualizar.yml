@@ -5,7 +5,23 @@ on:
     # El BOE se publica normalmente a partir de las 7:00 (hora de España).
     # 06:30 UTC = 07:30/08:30 hora de España según horario de verano/invierno.
     - cron: "30 6 * * 1-6"   # de lunes a sábado (el BOE no publica los domingos)
+
+  # Además de la ejecución diaria, el sitio se regenera automáticamente cada vez
+  # que cambia el código. Así puedes tocar solo scripts/ desde tu ordenador y
+  # olvidarte de generar y subir las miles de páginas de docs/.
+  push:
+    branches: [main]
+    paths:
+      - "scripts/**"
+      - ".github/workflows/actualizar.yml"
+
   workflow_dispatch: {}       # permite lanzarlo a mano desde la pestaña "Actions"
+
+# Evita que dos ejecuciones simultáneas (por ejemplo, el cron y un push a la vez)
+# se pisen entre ellas al escribir en el repositorio.
+concurrency:
+  group: actualizar-boe
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -20,9 +36,12 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Descargar sumario del BOE de hoy
+        # En las ejecuciones por push no hace falta descargar nada nuevo del BOE:
+        # basta con regenerar el sitio usando los datos que ya hay.
+        if: github.event_name != 'push'
         run: node scripts/fetch-boe.mjs
 
       - name: Generar sitio estático
@@ -32,6 +51,8 @@ jobs:
         run: |
           git config user.name "boe-bot"
           git config user.email "boe-bot@users.noreply.github.com"
-          git add data/oposiciones.json docs/
+          # -f porque docs/ y data/ están en .gitignore para que no los subas tú
+          # desde el ordenador, pero el robot sí debe versionarlos.
+          git add -f data/oposiciones.json docs/
           git diff --cached --quiet && echo "Sin cambios" || git commit -m "Actualización automática BOE $(date +'%Y-%m-%d')"
           git push

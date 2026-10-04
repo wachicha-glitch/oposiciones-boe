@@ -1,1 +1,12 @@
 node_modules/
+
+# Los archivos generados los produce y sube EXCLUSIVAMENTE el robot
+# (GitHub Actions). Si los subiéramos también desde el ordenador, los dos
+# estaríamos modificando los mismos miles de ficheros y cada push acabaría
+# en conflicto. Así que aquí solo se versiona el código fuente (scripts/)
+# y el robot se encarga del resto.
+#
+# Importante: estas dos carpetas SIGUEN existiendo en el repositorio y en la
+# web publicada; simplemente dejan de subirse desde tu equipo.
+docs/
+data/
