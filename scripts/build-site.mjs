@@ -33,7 +33,7 @@ const ADSENSE_SNIPPET = `<script async src="https://pagead2.googlesyndication.co
 // defecto: hasta que la persona acepte el banner de cookies, no se activa el
 // almacenamiento de analítica ni de anuncios. cookies.js actualiza este estado
 // cuando la persona acepta o rechaza.
-const GA_MEASUREMENT_ID = "G-WPC55CZR3C";
+const GA_MEASUREMENT_ID = "G-VGPF23MR97";
 const GA_SNIPPET = `<script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
