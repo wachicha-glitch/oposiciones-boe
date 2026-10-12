@@ -4,7 +4,7 @@
 // No usa frameworks: HTML plano + un poco de CSS/JS, para que cargue rápido
 // (bueno para SEO y para Core Web Vitals).
 
-import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
+import { readFile, writeFile, mkdir, rm, cp, readdir } from "node:fs/promises";
 import path from "node:path";
 import { ARTICULOS } from "./articulos.mjs";
 import { COMUNIDAD_LABELS, COMUNIDAD_BOLETIN } from "./comunidades.mjs";
@@ -12,6 +12,17 @@ import { COMUNIDAD_LABELS, COMUNIDAD_BOLETIN } from "./comunidades.mjs";
 const ROOT = process.cwd();
 const DATA_FILE = path.join(ROOT, "data", "oposiciones.json");
 const DOCS_DIR = path.join(ROOT, "docs");
+
+// Ficheros estáticos que NO se generan (hoja de estilos, scripts del navegador,
+// iconos, imagen para redes). Viven en assets/, que sí se versiona, y se copian
+// a docs/ en cada compilación.
+//
+// Antes estaban sueltos dentro de docs/. Como docs/ es una carpeta generada y
+// está en .gitignore, al dejar de versionarse se perdieron todos y el sitio
+// quedó publicado sin diseño ni iconos durante días. Teniéndolos en assets/ y
+// copiándolos aquí, docs/ pasa a ser enteramente reproducible: aunque se borre
+// por completo, una compilación lo deja igual que estaba.
+const ASSETS_DIR = path.join(ROOT, "assets");
 
 const SITE_NAME = "Oposiciones BOE Hoy";
 const SITE_DESC = "Convocatorias de oposiciones y empleo público publicadas en el BOE, actualizadas automáticamente cada día a partir de la fuente oficial.";
@@ -1136,6 +1147,30 @@ async function main() {
   for (const carpeta of ["oposicion", "categoria", "archivo", "comunidad", "articulos"]) {
     await rm(path.join(DOCS_DIR, carpeta), { recursive: true, force: true });
     await mkdir(path.join(DOCS_DIR, carpeta), { recursive: true });
+  }
+
+  // ---------- copiar los estáticos de assets/ a docs/ ----------
+  let copiados = 0;
+  try {
+    for (const nombre of await readdir(ASSETS_DIR)) {
+      await cp(path.join(ASSETS_DIR, nombre), path.join(DOCS_DIR, nombre));
+      copiados++;
+    }
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      // Sin assets/ el sitio se publica sin hoja de estilos ni iconos: se ve
+      // como HTML sin formato. Es un fallo grave y silencioso, así que se
+      // aborta en lugar de generar un sitio roto.
+      throw new Error(
+        `No existe la carpeta ${ASSETS_DIR}, que contiene la hoja de estilos, los ` +
+        `scripts y los iconos. Sin ella el sitio se publicaría sin diseño, así que ` +
+        `no se genera nada. Recupérala antes de volver a compilar.`
+      );
+    }
+    throw err;
+  }
+  if (copiados === 0) {
+    throw new Error(`La carpeta ${ASSETS_DIR} está vacía: faltan la hoja de estilos y los iconos.`);
   }
 
   const TAM_PAGINA = 40;
