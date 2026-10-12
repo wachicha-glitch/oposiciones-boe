@@ -148,16 +148,62 @@ async function descargarSumario(fecha) {
 
 // -------------------- almacenamiento --------------------
 
+// Devuelve los registros ya acumulados.
+//
+// Distingue dos situaciones que ANTES se trataban igual (devolviendo una lista
+// vacía), y esa confusión provocó una pérdida silenciosa del histórico: si el
+// fichero desaparecía del repositorio, el robot creía que era la primera
+// ejecución y volvía a empezar desde cero sin avisar.
+//
+//   - El fichero no existe (ENOENT): es legítimo solo la primera vez. Se avisa
+//     por consola y se continúa con una lista vacía.
+//   - El fichero existe pero no se puede leer o no es JSON válido: eso es un
+//     error, no un arranque limpio. Se aborta para no sobrescribir datos buenos
+//     con un fichero recién creado.
 async function cargarExistentes() {
+  let raw;
   try {
-    const raw = await readFile(DATA_FILE, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return [];
+    raw = await readFile(DATA_FILE, "utf-8");
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      console.warn(
+        `AVISO: no existe ${DATA_FILE}. Se asume primera ejecución y se empieza con 0 registros.\n` +
+        `       Si esperabas tener histórico acumulado, DETÉN el proceso: el fichero puede haberse\n` +
+        `       perdido y esta ejecución lo reemplazaría por uno nuevo con los datos de hoy.`
+      );
+      return [];
+    }
+    throw err;
+  }
+
+  try {
+    const datos = JSON.parse(raw);
+    if (!Array.isArray(datos)) throw new Error("el contenido no es una lista");
+    return datos;
+  } catch (err) {
+    throw new Error(
+      `${DATA_FILE} existe pero no se ha podido leer (${err.message}). ` +
+      `Se aborta para no sobrescribir el histórico con datos incompletos.`
+    );
   }
 }
 
-async function guardar(registros) {
+// Proporción mínima que debe conservarse respecto al histórico previo. Una
+// ejecución normal solo añade registros, así que una caída por debajo de este
+// umbral indica que algo ha ido mal (fichero perdido, respuesta parcial del
+// BOE, etc.) y no un resultado legítimo.
+const UMBRAL_PERDIDA = 0.9;
+
+async function guardar(registros, totalPrevio = 0) {
+  // Red de seguridad: nunca sustituir un histórico grande por uno mucho menor.
+  if (totalPrevio > 0 && registros.length < totalPrevio * UMBRAL_PERDIDA) {
+    throw new Error(
+      `Se iban a guardar ${registros.length} registros cuando antes había ${totalPrevio}. ` +
+      `Eso supondría perder histórico, así que no se escribe nada. ` +
+      `Revisa data/oposiciones.json antes de volver a ejecutar.`
+    );
+  }
+
   await mkdir(DATA_DIR, { recursive: true });
   // Orden: más recientes primero
   registros.sort((a, b) => (a.fecha_publicacion < b.fecha_publicacion ? 1 : -1));
@@ -185,8 +231,11 @@ async function main() {
   }
 
   const registros = [...porId.values()];
-  await guardar(registros);
-  console.log(`Total acumulado: ${registros.length} oposiciones/concursos en ${DATA_FILE}`);
+  await guardar(registros, existentes.length);
+  console.log(
+    `Total acumulado: ${registros.length} oposiciones/concursos en ${DATA_FILE} ` +
+    `(antes había ${existentes.length}).`
+  );
 }
 
 main().catch((err) => {

@@ -1378,7 +1378,26 @@ async function main() {
     `google.com, ${ADSENSE_PUB_ID}, DIRECT, f08c47fec0942fa0\n`
   );
 
-  console.log(`Sitio generado en ${DOCS_DIR} con ${registros.length} convocatorias, ${sitemapUrls.length} URLs en el sitemap.`);
+  // ---------- CNAME: lo que ata el dominio propio a GitHub Pages ----------
+  //
+  // Sin este fichero, GitHub Pages deja de servir el sitio en boeoposiciones.es
+  // y solo responde en la URL github.io. Ya pasó una vez: se borró sin querer y
+  // el dominio dejó de funcionar durante días.
+  //
+  // Por eso se GENERA en cada compilación a partir de SITE_URL, en lugar de
+  // guardarse a mano: así es imposible que vuelva a perderse, y si algún día
+  // cambias de dominio basta con cambiar SITE_URL.
+  const dominio = new URL(SITE_URL).hostname;
+  await writeFile(path.join(DOCS_DIR, "CNAME"), `${dominio}\n`);
+
+  // .nojekyll evita que GitHub Pages procese el sitio con Jekyll, que ignoraría
+  // los ficheros y carpetas que empiezan por guion bajo o punto.
+  await writeFile(path.join(DOCS_DIR, ".nojekyll"), "");
+
+  console.log(
+    `Sitio generado en ${DOCS_DIR} con ${registros.length} convocatorias, ` +
+    `${sitemapUrls.length} URLs en el sitemap. Dominio en CNAME: ${dominio}`
+  );
 }
 
 main().catch((err) => {
